@@ -1,1 +1,35 @@
+#ELIMINAR LA SUBIDA DEL ENTORNO VIRTUAL
+# Entornos virtuales
+.venv/
 venv/
+env/
+ENV/
+
+#PARA EVITAR SUBIR CREDENCIALES
+# Archivos de Kedro
+conf/local/
+conf/base/credentials.yml
+
+
+
+#OTROS DE PYTHON Y CACHE
+# Archivos temporales / cache
+*.log
+*.tmp
+*.cache
+*.bak
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+# Jupyter / IPython
+.ipynb_checkpoints/
+*.ipynb
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# Otros
+.DS_Store
