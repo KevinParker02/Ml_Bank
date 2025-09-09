@@ -1,4 +1,6 @@
 #datasets sin modificar
+
+#Este es para limpiar dataset 1
 bank_customer_transactions:
   type: pandas.CSVDataSet
   filepath: data/01_raw/bank_customer_transactions.csv
@@ -10,7 +12,8 @@ cleaned_dataset:
 customer_agg:
   type: pandas.CSVDataSet
   filepath: data/01_raw/customer_agg.csv
-    
+  
+#dataset 2 a usar
 customers:
   type: pandas.CSVDataSet
   filepath: data/01_raw/customers.csv
@@ -18,7 +21,8 @@ customers:
 foreign_customer_dataset:
   type: pandas.CSVDataSet
   filepath: data/01_raw/foreign_customer_dataset.csv
-        
+
+#dataset 3 a usar
 fraud_dataset:
   type: pandas.CSVDataSet
   filepath: data/01_raw/fraud_dataset.csv
