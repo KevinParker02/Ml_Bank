@@ -1,0 +1,33 @@
+#datasets sin modificar
+bank_customer_transactions:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/bank_customer_transactions.csv
+
+cleaned_dataset:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/cleaned_dataset.csv
+  
+customer_agg:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/customer_agg.csv
+    
+customers:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/customers.csv
+      
+foreign_customer_dataset:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/foreign_customer_dataset.csv
+        
+fraud_dataset:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/fraud_dataset.csv
+          
+RFM:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/RFM.csv
+            
+transactions:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/transactions.csv
+              
