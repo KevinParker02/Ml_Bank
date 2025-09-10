@@ -19,3 +19,6 @@ kedro-datasets>=1.0.0
 # Utilities
 jupyter>=1.0.0
 ipykernel>=6.0.0
+
+#otros
+pyspark>=3.5.0
