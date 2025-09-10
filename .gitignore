@@ -26,7 +26,7 @@ __pycache__/
 *.sqlite3
 # Jupyter / IPython
 .ipynb_checkpoints/
-*.ipynb
+
 # VSCode / PyCharm
 .vscode/
 .idea/
