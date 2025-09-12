@@ -1,37 +1,35 @@
-#datasets sin modificar
+# ========================
+# Datasets en 01_raw
+# ========================
 
-#Este es para limpiar dataset 1
 bank_customer_transactions:
   type: pandas.CSVDataset
   filepath: data/01_raw/bank_customer_transactions.csv
 
 cleaned_dataset:
-  type: pandas.CSVDataSet
+  type: pandas.CSVDataset
   filepath: data/01_raw/cleaned_dataset.csv
-  
+
 customer_agg:
-  type: pandas.CSVDataSet
+  type: pandas.CSVDataset
   filepath: data/01_raw/customer_agg.csv
-  
-#dataset 2 a usar
+
 customers:
   type: pandas.CSVDataset
   filepath: data/01_raw/customers.csv
-      
+
 foreign_customer_dataset:
-  type: pandas.CSVDataSet
+  type: pandas.CSVDataset
   filepath: data/01_raw/foreign_customer_dataset.csv
 
-#dataset 3 a usar
 fraud_dataset:
   type: pandas.CSVDataset
   filepath: data/01_raw/fraud_dataset.csv
-          
+
 RFM:
-  type: pandas.CSVDataSet
+  type: pandas.CSVDataset
   filepath: data/01_raw/RFM.csv
-            
+
 transactions:
-  type: pandas.CSVDataSet
+  type: pandas.CSVDataset
   filepath: data/01_raw/transactions.csv
-              
