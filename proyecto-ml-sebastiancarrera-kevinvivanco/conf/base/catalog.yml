@@ -2,6 +2,8 @@
 # Datasets en 01_raw
 # ========================
 
+# ==== inputs =====
+
 bank_customer_transactions:
   type: pandas.CSVDataset
   filepath: data/01_raw/bank_customer_transactions.csv
@@ -33,3 +35,9 @@ RFM:
 transactions:
   type: pandas.CSVDataset
   filepath: data/01_raw/transactions.csv
+
+# ==== outputs =====
+
+validated_cleaned_dataset:
+  type: pandas.CSVDataset
+  filepath: data/02_intermediate/validated_cleaned_dataset.csv

@@ -1,5 +1,5 @@
-"""Proyecto_ML_SebastianCarrera_KevinVivano file for ensuring the package is executable
-as `proyecto-ml-sebastiancarrera-kevinvivano` and `python -m proyecto_ml_sebastiancarrera_kevinvivano`
+"""Proyecto_ML_SebastianCarrera_KevinVivanco file for ensuring the package is executable
+as `proyecto-ml-sebastiancarrera-kevinvivanco` and `python -m proyecto_ml_sebastiancarrera_kevinvivanco`
 """
 import sys
 from pathlib import Path

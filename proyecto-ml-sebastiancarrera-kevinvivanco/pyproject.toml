@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 requires-python = ">=3.9"
-name = "proyecto_ml_sebastiancarrera_kevinvivano"
+name = "proyecto_ml_sebastiancarrera_kevinvivanco"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-"proyecto-ml-sebastiancarrera-kevinvivano" = "proyecto_ml_sebastiancarrera_kevinvivano.__main__:main"
+"proyecto-ml-sebastiancarrera-kevinvivanco" = "proyecto_ml_sebastiancarrera_kevinvivanco.__main__:main"
 
 [project.entry-points."kedro.hooks"]
 
@@ -44,15 +44,15 @@ dev = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "proyecto_ml_sebastiancarrera_kevinvivano.__version__"}
+version = {attr = "proyecto_ml_sebastiancarrera_kevinvivanco.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = false
 
 [tool.kedro]
-package_name = "proyecto_ml_sebastiancarrera_kevinvivano"
-project_name = "Proyecto_ML_SebastianCarrera_KevinVivano"
+package_name = "proyecto_ml_sebastiancarrera_kevinvivanco"
+project_name = "Proyecto_ML_SebastianCarrera_KevinVivanco"
 kedro_init_version = "1.0.0"
 tools = "['Linting', 'Testing', 'Custom Logging', 'Documentation', 'Data Structure', 'PySpark']"
 example_pipeline = "False"
@@ -61,7 +61,7 @@ source_dir = "src"
 [tool.pytest.ini_options]
 addopts = """
 --cov-report term-missing \
---cov src/proyecto_ml_sebastiancarrera_kevinvivano -ra"""
+--cov src/proyecto_ml_sebastiancarrera_kevinvivanco -ra"""
 
 [tool.coverage.report]
 fail_under = 0

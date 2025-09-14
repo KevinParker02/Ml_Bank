@@ -1,4 +1,4 @@
-# Proyecto_ML_SebastianCarrera_KevinVivano
+# Proyecto_ML_SebastianCarrera_KevinVivanco
 
 [![Powered by Kedro](https://img.shields.io/badge/powered_by-kedro-ffc900?logo=kedro)](https://kedro.org)
 

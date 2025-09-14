@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-# proyecto_ml_sebastiancarrera_kevinvivano documentation build
+# proyecto_ml_sebastiancarrera_kevinvivanco documentation build
 # configuration file, created by sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -19,11 +19,11 @@
 #
 import re
 
-from proyecto_ml_sebastiancarrera_kevinvivano import __version__ as release
+from proyecto_ml_sebastiancarrera_kevinvivanco import __version__ as release
 
 # -- Project information -----------------------------------------------------
 
-project = "proyecto_ml_sebastiancarrera_kevinvivano"
+project = "proyecto_ml_sebastiancarrera_kevinvivanco"
 author = "Kedro"
 
 # The short X.Y version.
@@ -119,7 +119,7 @@ html_show_copyright = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "proyecto_ml_sebastiancarrera_kevinvivanodoc"
+htmlhelp_basename = "proyecto_ml_sebastiancarrera_kevinvivancodoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -147,8 +147,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "proyecto_ml_sebastiancarrera_kevinvivano.tex",
-        "proyecto_ml_sebastiancarrera_kevinvivano Documentation",
+        "proyecto_ml_sebastiancarrera_kevinvivanco.tex",
+        "proyecto_ml_sebastiancarrera_kevinvivanco Documentation",
         "Kedro",
         "manual",
     )
@@ -161,8 +161,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "proyecto_ml_sebastiancarrera_kevinvivano",
-        "proyecto_ml_sebastiancarrera_kevinvivano Documentation",
+        "proyecto_ml_sebastiancarrera_kevinvivanco",
+        "proyecto_ml_sebastiancarrera_kevinvivanco Documentation",
         [author],
         1,
     )
@@ -176,11 +176,11 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "proyecto_ml_sebastiancarrera_kevinvivano",
-        "proyecto_ml_sebastiancarrera_kevinvivano Documentation",
+        "proyecto_ml_sebastiancarrera_kevinvivanco",
+        "proyecto_ml_sebastiancarrera_kevinvivanco Documentation",
         author,
-        "proyecto_ml_sebastiancarrera_kevinvivano",
-        "Project proyecto_ml_sebastiancarrera_kevinvivano codebase.",
+        "proyecto_ml_sebastiancarrera_kevinvivanco",
+        "Project proyecto_ml_sebastiancarrera_kevinvivanco codebase.",
         "Data-Science",
     )
 ]
