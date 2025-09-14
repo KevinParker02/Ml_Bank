@@ -34,19 +34,19 @@ def create_pipeline(**kwargs):
         node(
             func=generate_reporting,
             inputs=dict(df="NIV_cleaned_dataset", dataset_name="params:dataset_name_cleaned", stage="params:stage_final"),
-            outputs="report_cleaned_final",
-            name="report_cleaned_final_node",
+            outputs="report_cleaned_VarEliminadas",
+            name="report_cleaned_VarEliminadas",
         ),
         node(
             func=generate_reporting,
             inputs=dict(df="NIV_customer_agg", dataset_name="params:dataset_name_customer", stage="params:stage_final"),
-            outputs="report_customer_final",
-            name="report_customer_final_node",
+            outputs="report_customer_VarEliminadas",
+            name="report_customer_VarEliminadas",
         ),
         node(
             func=generate_reporting,
             inputs=dict(df="NIV_RFM", dataset_name="params:dataset_name_rfm", stage="params:stage_final"),
-            outputs="report_rfm_final",
-            name="report_rfm_final_node",
+            outputs="report_rfm_VarEliminadas",
+            name="report_rfm_VarEliminadas",
         )
     ])
