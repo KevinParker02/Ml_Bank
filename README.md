@@ -1,5 +1,38 @@
 # Ml_Bank (Machine Learning - Bank Customer Transaction Analysis)
 
+## 🚀 Iniciar el Proyecto en Visual Studio Code  
+
+### 🔹 1. Clonar el repositorio
+```bash
+git clone https://github.com/tu-usuario/Ml_Bank.git
+cd Ml_Bank/proyecto-ml-sebastiancarrera-kevinvivanco
+
+# Crear entorno virtual
+python -m venv venv
+
+# Activar en Windows PowerShell
+.\venv\Scripts\activate
+
+# Activar en Linux / MacOS
+source venv/bin/activate
+
+# Instalamos las dependencias
+pip install -r requirements.txt
+
+# Verificamos la instalación de Kedro
+kedro info
+
+# Ejecutar los pipelines
+kedro run
+
+# Abrir los notebooks en VS Code
+jupyter notebook
+
+# Visualizar los pipelines
+kedro viz
+
+---
+
 # 📊 Fase 1 – Comprensión del Negocio
 
 Proyecto de Machine Learning con **Kedro** – Evaluación Parcial 1  
