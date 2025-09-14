@@ -19,6 +19,9 @@ source venv/bin/activate
 # Instalamos las dependencias
 pip install -r requirements.txt
 
+# DEBEMOS ingresar a la carpeta del proyecto
+cd proyecto-ml-sebastiancarrera-kevinvivanco
+
 # Verificamos la instalación de Kedro
 kedro info
 
