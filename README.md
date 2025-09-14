@@ -30,6 +30,7 @@ jupyter notebook
 
 # Visualizar los pipelines
 kedro viz
+```
 
 ---
 
