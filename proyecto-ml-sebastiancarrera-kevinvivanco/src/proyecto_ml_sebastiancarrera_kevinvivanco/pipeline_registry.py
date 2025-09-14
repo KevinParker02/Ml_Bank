@@ -3,12 +3,14 @@
 
 from typing import Dict
 from kedro.pipeline import Pipeline
-from proyecto_ml_sebastiancarrera_kevinvivanco.pipelines import data_engineering
+from proyecto_ml_sebastiancarrera_kevinvivanco.pipelines import data_engineering, reporting
 
 def register_pipelines() -> Dict[str, Pipeline]:
     data_engineering_pipeline = data_engineering.create_pipeline()
+    reporting_pipeline = reporting.create_pipeline()
 
     return {
-        "__default__": data_engineering_pipeline,  # corre si pones `kedro run`
         "data_engineering": data_engineering_pipeline,
+        "reporting": reporting_pipeline,
+        "__default__": data_engineering_pipeline + reporting_pipeline,  # corre si pones `kedro run`
     }

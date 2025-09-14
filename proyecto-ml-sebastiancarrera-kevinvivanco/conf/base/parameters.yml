@@ -1,0 +1,6 @@
+dataset_name_cleaned: cleaned_dataset
+dataset_name_customer: customer_agg
+dataset_name_rfm: RFM
+
+stage_inicial: inicial
+stage_final: final

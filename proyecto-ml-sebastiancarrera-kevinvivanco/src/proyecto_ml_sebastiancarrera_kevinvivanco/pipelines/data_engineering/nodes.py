@@ -8,17 +8,18 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def load_and_validate_data(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Valida y retorna el dataset cargado.
-
-    Args:
-        df: DataFrame raw
-
-    Returns:
-        DataFrame validado
-    """
-    assert not df.empty, "Dataset vacío"
-    logger.info(f"Dataset cargado: {df.shape}")
-    return df
+def clean_datasets(cleaned_dataset, customer_agg, RFM):
+    # --- cleaned_dataset ---
+    if "CustomerDOB" in cleaned_dataset.columns:
+        cleaned_dataset = cleaned_dataset.drop(columns=["CustomerDOB"])
+    
+    # --- customer_agg ---
+    if "Unnamed: 0" in customer_agg.columns:
+        customer_agg = customer_agg.drop(columns=["Unnamed: 0"])
+    
+    # --- RFM ---
+    drop_cols = [c for c in ["Unnamed: 0", "Segment"] if c in RFM.columns]
+    RFM = RFM.drop(columns=drop_cols)
+    
+    return cleaned_dataset, customer_agg, RFM
 
