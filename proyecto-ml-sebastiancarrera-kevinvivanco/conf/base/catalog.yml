@@ -38,6 +38,7 @@ transactions:
 
 
 # === Datasets INTERMEDIATE (output de limpieza) ===
+#NO VARIABLES IRRELEVANTES
 NIV_cleaned_dataset:
   type: pandas.CSVDataset
   filepath: data/02_intermediate/NIV_cleaned_dataset.csv
