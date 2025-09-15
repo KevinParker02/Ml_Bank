@@ -111,3 +111,23 @@ report_rfm_final:
   save_args:
     index: False
     encoding: latin1 
+
+
+#Guardado notebook
+NIV_full:
+  type: pandas.CSVDataset
+  filepath: data/02_intermediate/NIV_full.csv
+  load_args:
+    encoding: latin1
+  save_args:
+    index: False
+    encoding: latin1
+
+NIV_full_clean:
+  type: pandas.CSVDataset
+  filepath: data/02_intermediate/NIV_full.csv
+  load_args:
+    encoding: latin1
+  save_args:
+    index: False
+    encoding: latin1
