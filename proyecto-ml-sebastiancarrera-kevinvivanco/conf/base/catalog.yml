@@ -113,3 +113,30 @@ report_rfm_final:
     encoding: latin1 
 
 
+#==================ESTOS SON LOS DATASETS TRANSFORMADOS, SIN NULOS Y CON VARIABLES RELEVANTES
+PRI_cleaned:
+  type: pandas.CSVDataset
+  filepath: data/03_primary/PRI_cleaned.csv
+  save_args:
+    index: False
+    encoding: latin1
+  load_args:
+    encoding: latin1
+
+PRI_customer:
+  type: pandas.CSVDataset
+  filepath: data/03_primary/PRI_customer.csv
+  save_args:
+    index: False
+    encoding: latin1
+  load_args:
+    encoding: latin1
+
+PRI_rfm:
+  type: pandas.CSVDataset
+  filepath: data/03_primary/PRI_rfm.csv
+  save_args:
+    index: False
+    encoding: latin1
+  load_args:
+    encoding: latin1
