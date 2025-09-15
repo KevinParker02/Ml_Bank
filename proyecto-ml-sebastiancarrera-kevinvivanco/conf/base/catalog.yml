@@ -140,3 +140,13 @@ PRI_rfm:
     encoding: latin1
   load_args:
     encoding: latin1
+
+#==================DATASET INTEGRADO (MERGE DE LOS 3)
+PRI_full:
+  type: pandas.CSVDataset
+  filepath: data/03_primary/PRI_full.csv
+  save_args:
+    index: False
+    encoding: latin1
+  load_args:
+    encoding: latin1
