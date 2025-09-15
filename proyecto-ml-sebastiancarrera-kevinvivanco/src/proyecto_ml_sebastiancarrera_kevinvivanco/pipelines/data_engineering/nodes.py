@@ -11,14 +11,14 @@ logger = logging.getLogger(__name__)
 def clean_datasets(cleaned_dataset, customer_agg, RFM):
     # --- cleaned_dataset ---
     if "CustomerDOB" in cleaned_dataset.columns:
-        cleaned_dataset = cleaned_dataset.drop(columns=["CustomerDOB"])
+        cleaned_dataset = cleaned_dataset.drop(columns=["CustomerDOB","CustGender","CustAccountBalance","Age"])
     
     # --- customer_agg ---
     if "Unnamed: 0" in customer_agg.columns:
-        customer_agg = customer_agg.drop(columns=["Unnamed: 0"])
+        customer_agg = customer_agg.drop(columns=["Unnamed: 0","gender","location","avg_spent_pct_balance"])
     
     # --- RFM ---
-    drop_cols = [c for c in ["Unnamed: 0", "Segment"] if c in RFM.columns]
+    drop_cols = [c for c in ["Unnamed: 0", "Segment","R","M","F"] if c in RFM.columns]
     RFM = RFM.drop(columns=drop_cols)
     
     return cleaned_dataset, customer_agg, RFM
