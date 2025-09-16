@@ -102,10 +102,10 @@ Esto genera **riesgos financieros** y pérdida de **oportunidades de negocio**.
 
 | Semana | Actividad Principal | Entregable |
 |--------|---------------------|------------|
-| **1**  | Comprensión del negocio y selección de datasets | Notebook `01_business_understanding.ipynb` |
+| **1**  | Comprensión del negocio | Notebook `01_business_understanding.ipynb` |
 | **2**  | Análisis exploratorio de datos (EDA) | Notebook `02_data_understanding.ipynb` |
-| **3**  | Limpieza de datos | Notebook `03_data_preparation.ipynb` |
-| **4**  | Modelado: clasificación, regresión y segmentación | Notebook `04_modeling.ipynb` |
+| **3**  | Preparación y Limpieza de los datos | Notebook `03_data_preparation.ipynb` |
+| **4**  | Modelado y entrega final | Repositorio GitHub con README y pipelines Kedro |
 | **5**  | Documentación y entrega final | Repositorio GitHub con README y pipelines Kedro |
 
 ---
