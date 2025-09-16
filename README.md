@@ -40,13 +40,14 @@ kedro viz
 # 📊 Fase 1 – Comprensión del Negocio
 
 Proyecto de Machine Learning con **Kedro** – Evaluación Parcial 1  
-Asignatura: *Machine Learning (MLY0100)*  
+Asignatura: *Machine Learning (MLY0100)* 
+Dataset: https://www.kaggle.com/datasets/tanmayjune/bank-customer-transaction-analysis?select=bank_customer_transactions.csv  
 
 ---
 
 ## 🏦 Contexto del Proyecto
 
-Una entidad bancaria busca **mejorar la toma de decisiones estratégicas** mediante el uso de sus datos históricos de clientes y transacciones.  
+Una entidad bancaria, proveniente de la India, busca **mejorar la toma de decisiones estratégicas** mediante el uso de sus datos históricos de clientes y transacciones.  
 Actualmente, el banco cuenta con registros de **clientes, transacciones y perfiles de valor**, pero carece de un sistema predictivo robusto para:
 
 - Detectar **transacciones fraudulentas**.  
@@ -103,7 +104,7 @@ Esto genera **riesgos financieros** y pérdida de **oportunidades de negocio**.
 |--------|---------------------|------------|
 | **1**  | Comprensión del negocio y selección de datasets | Notebook `01_business_understanding.ipynb` |
 | **2**  | Análisis exploratorio de datos (EDA) | Notebook `02_data_understanding.ipynb` |
-| **3**  | Limpieza y feature engineering | Notebook `03_data_preparation.ipynb` |
+| **3**  | Limpieza de datos | Notebook `03_data_preparation.ipynb` |
 | **4**  | Modelado: clasificación, regresión y segmentación | Notebook `04_modeling.ipynb` |
 | **5**  | Documentación y entrega final | Repositorio GitHub con README y pipelines Kedro |
 
