@@ -1,6 +1,16 @@
 from kedro.framework.hooks import hook_impl
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
+from dotenv import load_dotenv 
+
+class EnvironmentVariableHooks:
+    """Carga variables de entorno desde .env automáticamente."""
+
+    @hook_impl
+    def after_context_created(self, context) -> None:
+        """Carga las variables del archivo .env antes de inicializar Spark u otros recursos."""
+        load_dotenv()  # 👈 carga las variables del .env
+        print("✅ Variables de entorno cargadas desde .env")
 
 
 class SparkHooks:
