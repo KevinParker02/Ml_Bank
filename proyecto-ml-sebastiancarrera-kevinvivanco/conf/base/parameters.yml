@@ -18,7 +18,7 @@ feature_engineering:
       customer_id: CustomerID
       transaction_id: TransactionID
       transaction_date: TransactionDate
-      amount: Amount
+      amount: TransactionAmount (INR)
 
   # --- Segmentación basada en scores RFM ---
   rfm_segments:
@@ -36,7 +36,7 @@ feature_engineering:
     columns:
       customer_id: CustomerID
       transaction_date: TransactionDate
-      amount: Amount
+      amount: TransactionAmount (INR)
 
 # =========================
 # DATA CLEANING / OUTLIERS
