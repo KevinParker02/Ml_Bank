@@ -4,3 +4,58 @@ dataset_name_rfm: RFM
 
 stage_inicial: inicial
 stage_final: final
+
+# =========================
+# FEATURE ENGINEERING (Paso 3) - Ajustado a tus columnas reales
+# =========================
+feature_engineering:
+  # --- Configuración de RFM ---
+  rfm:
+    # Si es null, se usa (max(TransactionDate) + 1 día)
+    reference_date: null
+    rfm_bins: 5
+    columns:
+      customer_id: CustomerID
+      transaction_id: TransactionID
+      transaction_date: TransactionDate
+      amount: Amount
+
+  # --- Segmentación basada en scores RFM ---
+  rfm_segments:
+    use_standard_segments: true
+
+  # --- Features de valor de cliente (CLV simple, etc.) ---
+  customer_value:
+    annualization_factor: 12
+
+  # --- Features específicas para detección de fraude ---
+  fraud_detection:
+    rapid_transaction_threshold_hours: 0.5
+    high_value_threshold: null
+    anomaly_zscore_threshold: 3
+    columns:
+      customer_id: CustomerID
+      transaction_date: TransactionDate
+      amount: Amount
+
+# =========================
+# DATA CLEANING / OUTLIERS
+# =========================
+data_cleaning:
+  required_columns:
+    - CustomerID
+    - TransactionID
+    - TransactionDate
+    - Amount
+
+  outlier_treatment:
+    Amount:
+      method: percentile     # iqr | percentile | zscore
+      action: winsorize      # cap | remove | winsorize
+      lower_percentile: 0.01
+      upper_percentile: 0.99
+
+  datetime:
+    columns: [TransactionDate]
+    infer_datetime_format: true
+    utc: false
