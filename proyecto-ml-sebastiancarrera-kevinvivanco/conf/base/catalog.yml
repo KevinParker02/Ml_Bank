@@ -37,116 +37,135 @@ transactions:
   filepath: data/01_raw/transactions.csv
 
 
-# === Datasets INTERMEDIATE (output de limpieza) ===
+# === Datasets INTERMEDIATE (output de limpieza) — Parquet + versionado ===
 #NO VARIABLES IRRELEVANTES
 NIV_cleaned_dataset:
-  type: pandas.CSVDataset
-  filepath: data/02_intermediate/NIV_cleaned_dataset.csv
-  load_args:
-    encoding: latin1
-  save_args:
-    index: False
-    encoding: latin1
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/NIV_cleaned_dataset.parquet
+  versioned: true
 
 NIV_customer_agg:
-  type: pandas.CSVDataset
-  filepath: data/02_intermediate/NIV_customer_agg.csv
-  load_args:
-    encoding: latin1
-  save_args:
-    index: False
-    encoding: latin1
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/NIV_customer_agg.parquet
+  versioned: true
 
 NIV_RFM:
-  type: pandas.CSVDataset
-  filepath: data/02_intermediate/NIV_RFM.csv
-  load_args:
-    encoding: latin1
-  save_args:
-    index: False
-    encoding: latin1
-
-#================REPORTING
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/NIV_RFM.parquet
+  versioned: true
 
 
+# === PRIMARY (datasets transformados) — Parquet + versionado
+PRI_cleaned:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_cleaned.parquet
+  versioned: true
 
-# Inicial ANTES DE LIMPIEZA DE DATOS
+PRI_customer:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_customer.parquet
+  versioned: true
+
+PRI_rfm:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_rfm.parquet
+  versioned: true
+
+# Dataset integrado (merge de los 3)
+PRI_full:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_full.parquet
+  versioned: true
+
+
+# === FEATURES (para el pipeline de feature engineering) — Parquet + versionado
+rfm_features:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/rfm_features.parquet
+  versioned: true
+
+rfm_with_segments:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/rfm_with_segments.parquet
+  versioned: true
+
+customer_features_enriched:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/customer_features_enriched.parquet
+  versioned: true
+
+transactions_with_fraud_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/transactions_with_fraud_features.parquet
+  versioned: true
+
+transactions_model_ready:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/transactions_model_ready.parquet
+  versioned: true
+
+
+# === MODELOS (artefactos) — Pickle + versionado
+fraud_detection_model:
+  type: pickle.PickleDataset
+  filepath: data/06_models/fraud_detector.pkl
+  versioned: true
+
+customer_segmentation_model:
+  type: pickle.PickleDataset
+  filepath: data/06_models/segmentation.pkl
+  versioned: true
+
+
+# === REPORTING (múltiples formatos)
+# Reportes “inicial” y “final”: si quieres mantener CSV con latin1, déjalos así.
 report_cleaned_inicial:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_cleaned_inicial.csv
+  load_args: { encoding: latin1 }
+  save_args: { index: False, encoding: latin1 }
 
 report_customer_inicial:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_customer_inicial.csv
+  load_args: { encoding: latin1 }
+  save_args: { index: False, encoding: latin1 }
 
 report_rfm_inicial:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_rfm_inicial.csv
+  load_args: { encoding: latin1 }
+  save_args: { index: False, encoding: latin1 }
 
-# Final DESPUES DE ELIMINACIÓN DE COLUMNAS POCO RELEVANTES PARA EL ANALISIS
 report_cleaned_final:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_cleaned_final.csv
-  load_args:
-    encoding: latin1  
-  save_args:
-    index: False
-    encoding: latin1 
-
+  load_args: { encoding: latin1 }
+  save_args: { index: False, encoding: latin1 }
 
 report_customer_final:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_customer_final.csv
-  load_args:
-    encoding: latin1  
-  save_args:
-    index: False
-    encoding: latin1 
+  load_args: { encoding: latin1 }
+  save_args: { index: False, encoding: latin1 }
 
 report_rfm_final:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_rfm_final.csv
-  load_args:
-    encoding: latin1  
-  save_args:
-    index: False
-    encoding: latin1 
+  load_args: { encoding: latin1 }
+  save_args: { index: False, encoding: latin1 }
 
+# Extras para “excelencia” en reporting
+rfm_analysis_report:
+  type: pandas.ExcelDataset
+  filepath: data/08_reporting/rfm_analysis.xlsx
+  save_args: {engine: openpyxl, index: false}
 
-#==================ESTOS SON LOS DATASETS TRANSFORMADOS, SIN NULOS Y CON VARIABLES RELEVANTES
-PRI_cleaned:
+model_metrics:
+  type: json.JSONDataset
+  filepath: data/08_reporting/model_metrics.json
+
+fraud_alerts:
   type: pandas.CSVDataset
-  filepath: data/03_primary/PRI_cleaned.csv
-  save_args:
-    index: False
-    encoding: latin1
-  load_args:
-    encoding: latin1
-
-PRI_customer:
-  type: pandas.CSVDataset
-  filepath: data/03_primary/PRI_customer.csv
-  save_args:
-    index: False
-    encoding: latin1
-  load_args:
-    encoding: latin1
-
-PRI_rfm:
-  type: pandas.CSVDataset
-  filepath: data/03_primary/PRI_rfm.csv
-  save_args:
-    index: False
-    encoding: latin1
-  load_args:
-    encoding: latin1
-
-#==================DATASET INTEGRADO (MERGE DE LOS 3)
-PRI_full:
-  type: pandas.CSVDataset
-  filepath: data/03_primary/PRI_full.csv
-  save_args:
-    index: False
-    encoding: latin1
-  load_args:
-    encoding: latin1
+  filepath: data/08_reporting/fraud_alerts.csv
+  save_args: { index: False }

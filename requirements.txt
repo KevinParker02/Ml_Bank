@@ -22,3 +22,8 @@ ipykernel>=6.0.0
 
 #otros
 pyspark>=3.5.0
+pyarrow>=14,<19
+openpyxl>=3.1
+python-dotenv>=1.0
+# opcional
+fastparquet>=2024.2.0
