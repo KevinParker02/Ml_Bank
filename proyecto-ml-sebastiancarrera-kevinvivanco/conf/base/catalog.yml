@@ -69,50 +69,12 @@ PRI_rfm:
   filepath: data/03_primary/PRI_rfm.parquet
   versioned: true
 
-# Dataset integrado (merge de los 3)
+# Dataset integrado (merge de los 3 datasets principales a utilizar)
 PRI_full:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_full.parquet
   versioned: true
 
-
-# === FEATURES (para el pipeline de feature engineering) — Parquet + versionado
-rfm_features:
-  type: pandas.ParquetDataset
-  filepath: data/03_primary/rfm_features.parquet
-  versioned: true
-
-rfm_with_segments:
-  type: pandas.ParquetDataset
-  filepath: data/04_feature/rfm_with_segments.parquet
-  versioned: true
-
-customer_features_enriched:
-  type: pandas.ParquetDataset
-  filepath: data/04_feature/customer_features_enriched.parquet
-  versioned: true
-
-transactions_with_fraud_features:
-  type: pandas.ParquetDataset
-  filepath: data/04_feature/transactions_with_fraud_features.parquet
-  versioned: true
-
-transactions_model_ready:
-  type: pandas.ParquetDataset
-  filepath: data/05_model_input/transactions_model_ready.parquet
-  versioned: true
-
-
-# === MODELOS (artefactos) — Pickle + versionado
-fraud_detection_model:
-  type: pickle.PickleDataset
-  filepath: data/06_models/fraud_detector.pkl
-  versioned: true
-
-customer_segmentation_model:
-  type: pickle.PickleDataset
-  filepath: data/06_models/segmentation.pkl
-  versioned: true
 
 
 # === REPORTING (múltiples formatos)
@@ -152,6 +114,11 @@ report_rfm_final:
   filepath: data/08_reporting/report_rfm_final.csv
   load_args: { encoding: latin1 }
   save_args: { index: False, encoding: latin1 }
+
+#Este es el nuevo PRI_FULL pero con las nuevas features creadas a partir de fraud :P
+PRI_full_fraud_features:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_full_fraud_features.parquet
 
 # Extras para “excelencia” en reporting
 rfm_analysis_report:
