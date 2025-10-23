@@ -139,10 +139,19 @@ PRI_full_fraud_features:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_full_fraud_features.parquet
 
-#Este es el dataframe con las variables utiles para los modelos definidos en 03_2
+#Este es el dataframe con las variables utiles para los modelos (CLASIFICIÓN) definidos en 03_2
 Features_training_v1:
   type: pandas.ParquetDataset
   filepath: data/04_feature/Features_training_v1.parquet
+
+#Este es el dataframe con las variables utiles para los modelos (REGRESIÓN) definidos en 03_2
+Features_training_v2:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/Features_training_v2.parquet
+
+
+
+
 
 # Extras para “excelencia” en reporting
 rfm_analysis_report:
