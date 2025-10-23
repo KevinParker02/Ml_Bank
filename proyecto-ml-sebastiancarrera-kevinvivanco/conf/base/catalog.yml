@@ -69,12 +69,31 @@ PRI_rfm:
   filepath: data/03_primary/PRI_rfm.parquet
   versioned: true
 
+PRI_v2_cleaned:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_v2_cleaned.parquet
+  versioned: true
+
+PRI_v2_customer:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_v2_customer.parquet
+  versioned: true
+
+PRI_v2_rfm:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_v2_rfm.parquet
+  versioned: true
+
 # Dataset integrado (merge de los 3 datasets principales a utilizar)
 PRI_full:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_full.parquet
   versioned: true
 
+PRI_full_v2:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_full_v2.parquet
+  versioned: true
 
 
 # === REPORTING (múltiples formatos)
