@@ -89,11 +89,11 @@ PRI_full:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_full.parquet
   versioned: true
-
-PRI_full_v2:
+#Segunda versión si outliers
+PRI_FULL_V2:
   type: pandas.ParquetDataset
-  filepath: data/03_primary/PRI_full_v2.parquet
-  versioned: true
+  filepath: data/03_primary/PRI_FULL_V2.parquet
+  versioned: false
 
 
 # === REPORTING (múltiples formatos)
@@ -138,6 +138,11 @@ report_rfm_final:
 PRI_full_fraud_features:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_full_fraud_features.parquet
+
+#Este es el dataframe con las variables utiles para los modelos definidos en 03_2
+Features_training_v1:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/Features_training_v1.parquet
 
 # Extras para “excelencia” en reporting
 rfm_analysis_report:
