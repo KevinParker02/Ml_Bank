@@ -60,5 +60,21 @@ data_cleaning:
     infer_datetime_format: true
     utc: false
 
-#Esto es para los modelos de clasificacion
+# ===========================================================
+# Modelos de clasificación – rutas de guardado de modelos
+# ===========================================================
+
+# --- KNeighborsClassifier ---
 knn_model_path: "data/06_models/knn_model.pkl"
+
+# --- DecisionTreeClassifier ---
+dt_model_path: "data/06_models/dt_model.pkl"
+
+# --- RandomForestClassifier ---
+rf_model_path: "data/06_models/rf_model.pkl"
+
+# --- MLPClassifier ---
+mlp_model_path: "data/06_models/mlp_model.pkl"
+
+# --- XGBClassifier ---
+xgb_model_path: "data/06_models/xgb_model.pkl"
