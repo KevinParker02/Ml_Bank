@@ -72,17 +72,17 @@ PRI_rfm:
 PRI_v2_cleaned:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_v2_cleaned.parquet
-  versioned: true
+  versioned: false
 
 PRI_v2_customer:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_v2_customer.parquet
-  versioned: true
+  versioned: false
 
 PRI_v2_rfm:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_v2_rfm.parquet
-  versioned: true
+  versioned: false
 
 # Dataset integrado (merge de los 3 datasets principales a utilizar)
 PRI_full:
@@ -93,6 +93,12 @@ PRI_full:
 PRI_FULL_V2:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_FULL_V2.parquet
+  versioned: false
+
+# Dataset de salida del pipeline Feature engineering :p
+PRI_FULL_BASE:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_FULL_BASE.parquet
   versioned: false
 
 
