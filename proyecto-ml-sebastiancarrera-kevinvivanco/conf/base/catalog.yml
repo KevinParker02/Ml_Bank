@@ -98,7 +98,7 @@ PRI_FULL_V2:
 # Dataset de salida del pipeline Feature engineering :p
 PRI_FULL_BASE:
   type: pandas.ParquetDataset
-  filepath: data/03_primary/PRI_FULL_BASE.parquet
+  filepath: data/04_feature/PRI_FULL_BASE.parquet
   versioned: false
 
 
@@ -140,17 +140,12 @@ report_rfm_final:
   load_args: { encoding: latin1 }
   save_args: { index: False, encoding: latin1 }
 
-#Este es el nuevo PRI_FULL pero con las nuevas features creadas a partir de fraud :P
-PRI_full_fraud_features:
-  type: pandas.ParquetDataset
-  filepath: data/03_primary/PRI_full_fraud_features.parquet
-
 #Este es el dataframe con las variables utiles para los modelos (CLASIFICIÓN) definidos en 03_2
 Features_training_v1:
   type: pandas.ParquetDataset
-  filepath: data/04_feature/Features_training_v1.parquet
+  filepath: data/05_model_input/Features_training_v1.parquet
 
 #Este es el dataframe con las variables utiles para los modelos (REGRESIÓN) definidos en 03_2
 Features_training_v2:
   type: pandas.ParquetDataset
-  filepath: data/04_feature/Features_training_v2.parquet
+  filepath: data/05_model_input/Features_training_v2.parquet
