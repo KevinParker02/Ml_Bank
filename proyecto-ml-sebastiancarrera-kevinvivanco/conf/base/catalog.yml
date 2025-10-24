@@ -148,22 +148,3 @@ Features_training_v1:
 Features_training_v2:
   type: pandas.ParquetDataset
   filepath: data/04_feature/Features_training_v2.parquet
-
-
-
-
-
-# Extras para “excelencia” en reporting
-rfm_analysis_report:
-  type: pandas.ExcelDataset
-  filepath: data/08_reporting/rfm_analysis.xlsx
-  save_args: {engine: openpyxl, index: false}
-
-model_metrics:
-  type: json.JSONDataset
-  filepath: data/08_reporting/model_metrics.json
-
-fraud_alerts:
-  type: pandas.CSVDataset
-  filepath: data/08_reporting/fraud_alerts.csv
-  save_args: { index: False }
