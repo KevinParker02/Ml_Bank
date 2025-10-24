@@ -149,3 +149,8 @@ Features_training_v1:
 Features_training_v2:
   type: pandas.ParquetDataset
   filepath: data/05_model_input/Features_training_v2.parquet
+
+#Modelos de clasificacion
+knn_results:
+  type: pickle.PickleDataset
+  filepath: data/07_model_output/knn_results.pkl
