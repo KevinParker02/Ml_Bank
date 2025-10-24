@@ -1,6 +1,5 @@
 """
-This is a boilerplate pipeline 'data_engineering'
-generated using Kedro 1.0.0
+Pipeline 'data_engineering' actualizado con tratamiento de outliers
 """
 
 from kedro.pipeline import Pipeline, node, pipeline
@@ -8,7 +7,7 @@ from .nodes import *
 
 def create_pipeline(**kwargs):
     return Pipeline([
-        # 1) Limpieza inicial -> NIV
+        # 1️⃣ Limpieza inicial
         node(
             func=clean_datasets,
             inputs=["cleaned_dataset","customer_agg","RFM"],
@@ -16,7 +15,7 @@ def create_pipeline(**kwargs):
             name="clean_datasets_node"
         ),
 
-        # 2) Transformación -> PRI
+        # 2️⃣ Transformación
         node(
             func=transform_datasets,
             inputs=["NIV_cleaned_dataset","NIV_customer_agg","NIV_RFM"],
@@ -24,11 +23,19 @@ def create_pipeline(**kwargs):
             name="transform_datasets_node"
         ),
 
-        # 3) Integración -> PRI_full
+        # 3️⃣ Tratamiento de outliers
         node(
-            func=integrate_datasets,
+            func=treat_outliers,
             inputs=["PRI_cleaned","PRI_customer","PRI_rfm"],
-            outputs="PRI_full",
-            name="integrate_datasets_node"
-        )
+            outputs=["PRI_v2_cleaned","PRI_v2_customer","PRI_v2_rfm"],
+            name="treat_outliers_node"
+        ),
+
+        # 4️⃣ Integración final
+        node(
+            func=integrate_datasets_v2,
+            inputs=["PRI_v2_cleaned","PRI_v2_customer","PRI_v2_rfm"],
+            outputs="PRI_FULL_V2",
+            name="integrate_datasets_v2_node"
+        ),
     ])
