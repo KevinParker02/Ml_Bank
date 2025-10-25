@@ -27,13 +27,12 @@ def select_classification_features(df: pd.DataFrame) -> pd.DataFrame:
 # =========================================================
 def select_regression_features(df: pd.DataFrame) -> pd.DataFrame:
     """Crea el dataset de features para REGRESIÓN."""
-    keep_cols = [
-        "TxnCountInLast24Hours",          
-        "Recency",         
+    keep_cols = [              
         "Monetary",       
-        "TimeSinceLastTxn",            
-        "AmountZScoreByLocation",  
-        "TransactionAmount (INR)"         
+        "TimeSinceLastTxn",
+        "IsLateNight",            
+        "AmountZScoreByLocation",
+        "IsWeekend"     
     ]
 
     keep_cols_existing = [c for c in keep_cols if c in df.columns]
