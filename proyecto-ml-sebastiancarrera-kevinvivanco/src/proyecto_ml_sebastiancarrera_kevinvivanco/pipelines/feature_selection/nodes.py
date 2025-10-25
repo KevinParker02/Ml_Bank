@@ -7,7 +7,6 @@ def select_classification_features(df: pd.DataFrame) -> pd.DataFrame:
     """Crea el dataset de features para CLASIFICACIÓN."""
     keep_cols = [
         'AmountZScoreByLocation',
-        'RiskScore',
         'IsAnomaly',
         'IsLateNight',
         'IsWeekend',
