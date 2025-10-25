@@ -78,3 +78,22 @@ mlp_model_path: "data/06_models/clasificacion/mlp_model.pkl"
 
 # --- XGBClassifier ---
 xgb_model_path: "data/06_models/clasificacion/xgb_model.pkl"
+
+# ===========================================================
+# Modelos de regresión – rutas de guardado de modelos
+# ===========================================================
+
+# --- Linear Regression ---
+linear_model_path: "data/06_models/regresion/linear_model.pkl"
+
+# --- Ridge Regression ---
+ridge_model_path: "data/06_models/regresion/ridge_model.pkl"
+
+# --- Lasso Regression ---
+lasso_model_path: "data/06_models/regresion/lasso_model.pkl"
+
+# --- Random Forest Regressor ---
+rf_regressor_model_path: "data/06_models/regresion/rf_regressor_model.pkl"
+
+# --- XGBoost Regressor ---
+xgb_regressor_model_path: "data/06_models/regresion/xgb_regressor_model.pkl"

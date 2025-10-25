@@ -185,3 +185,33 @@ mlp_results:
 xgb_results:
   type: pickle.PickleDataset
   filepath: data/07_model_output/clasificacion/xgb_results.pkl
+
+
+# ======================================================================================
+# Guardados en 07_model_output como PickleDataset (.pkl) Para modelos de regresión :D
+# ======================================================================================
+
+# --- Linear Regression ---
+linear_results:
+  type: pickle.PickleDataset
+  filepath: data/07_model_output/regresion/linear_results.pkl
+
+# --- Ridge Regression ---
+ridge_results:
+  type: pickle.PickleDataset
+  filepath: data/07_model_output/regresion/ridge_results.pkl
+
+# --- Lasso Regression ---
+lasso_results:
+  type: pickle.PickleDataset
+  filepath: data/07_model_output/regresion/lasso_results.pkl
+
+# --- Random Forest Regressor ---
+rf_regressor_results:
+  type: pickle.PickleDataset
+  filepath: data/07_model_output/regresion/rf_regressor_results.pkl
+
+# --- XGBoost Regressor ---
+xgb_regressor_results:
+  type: pickle.PickleDataset
+  filepath: data/07_model_output/regresion/xgb_regressor_results.pkl
