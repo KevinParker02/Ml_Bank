@@ -94,6 +94,12 @@ PRI_FULL_V2:
   type: pandas.ParquetDataset
   filepath: data/03_primary/PRI_FULL_V2.parquet
   versioned: false
+#Este es el nuevo PRI_FULL pero con las nuevas features creadas a partir de fraud, dejo esto para no romper notebooks ///BORRAR SI HACE FALTA ////
+PRI_full_fraud_features:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/PRI_full_fraud_features.parquet
+
+
 
 # Dataset de salida del pipeline Feature engineering :p
 PRI_FULL_BASE:
