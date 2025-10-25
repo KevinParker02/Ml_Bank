@@ -158,24 +158,24 @@ Features_training_v2:
 # --- KNeighborsClassifier ---
 knn_results:
   type: pickle.PickleDataset
-  filepath: data/07_model_output/knn_results.pkl
+  filepath: data/07_model_output/clasificacion/knn_results.pkl
 
 # --- DecisionTreeClassifier ---
 dt_results:
   type: pickle.PickleDataset
-  filepath: data/07_model_output/dt_results.pkl
+  filepath: data/07_model_output/clasificacion/dt_results.pkl
 
 # --- RandomForestClassifier ---
 rf_results:
   type: pickle.PickleDataset
-  filepath: data/07_model_output/rf_results.pkl
+  filepath: data/07_model_output/clasificacion/rf_results.pkl
 
 # --- MLPClassifier ---
 mlp_results:
   type: pickle.PickleDataset
-  filepath: data/07_model_output/mlp_results.pkl
+  filepath: data/07_model_output/clasificacion/mlp_results.pkl
 
 # --- XGBClassifier ---
 xgb_results:
   type: pickle.PickleDataset
-  filepath: data/07_model_output/xgb_results.pkl
+  filepath: data/07_model_output/clasificacion/xgb_results.pkl

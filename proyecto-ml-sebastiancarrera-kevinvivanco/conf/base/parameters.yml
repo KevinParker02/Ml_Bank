@@ -65,16 +65,16 @@ data_cleaning:
 # ===========================================================
 
 # --- KNeighborsClassifier ---
-knn_model_path: "data/06_models/knn_model.pkl"
+knn_model_path: "data/06_models/clasificacion/knn_model.pkl"
 
 # --- DecisionTreeClassifier ---
-dt_model_path: "data/06_models/dt_model.pkl"
+dt_model_path: "data/06_models/clasificacion/dt_model.pkl"
 
 # --- RandomForestClassifier ---
-rf_model_path: "data/06_models/rf_model.pkl"
+rf_model_path: "data/06_models/clasificacion/rf_model.pkl"
 
 # --- MLPClassifier ---
-mlp_model_path: "data/06_models/mlp_model.pkl"
+mlp_model_path: "data/06_models/clasificacion/mlp_model.pkl"
 
 # --- XGBClassifier ---
-xgb_model_path: "data/06_models/xgb_model.pkl"
+xgb_model_path: "data/06_models/clasificacion/xgb_model.pkl"
