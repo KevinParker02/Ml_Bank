@@ -22,6 +22,6 @@ def register_pipelines() -> Dict[str, Pipeline]:
         "feature_engineering": feature_engineering_pipeline,
         "feature_selection": feature_selection_pipeline,
         "classification_models": classification_models_pipeline,
-        "regresion_models": regression_models_pipeline,
+        "regression_models": regression_models_pipeline,
         "__default__": data_engineering_pipeline + reporting_pipeline + feature_engineering_pipeline + feature_selection_pipeline + classification_models_pipeline + regression_models_pipeline# corre si pones `kedro run`
     }
