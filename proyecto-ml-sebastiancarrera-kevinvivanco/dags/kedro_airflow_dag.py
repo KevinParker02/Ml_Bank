@@ -22,33 +22,34 @@ with DAG(
 
     data_engineering = BashOperator(
         task_id="data_engineering",
-        bash_command="kedro run --pipeline=data_engineering",
+        bash_command="cd /app && kedro run --pipeline=data_engineering",
     )
 
     feature_engineering = BashOperator(
         task_id="feature_engineering",
-        bash_command="kedro run --pipeline=feature_engineering",
+        bash_command="cd /app && kedro run --pipeline=feature_engineering",
     )
 
     feature_selection = BashOperator(
         task_id="feature_selection",
-        bash_command="kedro run --pipeline=feature_selection",
+        bash_command="cd /app && kedro run --pipeline=feature_selection",
     )
 
     classification_models = BashOperator(
         task_id="classification_models",
-        bash_command="kedro run --pipeline=classification_models",
+        bash_command="cd /app && kedro run --pipeline=classification_models",
     )
 
     regression_models = BashOperator(
         task_id="regression_models",
-        bash_command="kedro run --pipeline=regression_models",
+        bash_command="cd /app && kedro run --pipeline=regression_models",
     )
 
     reporting = BashOperator(
         task_id="reporting",
-        bash_command="kedro run --pipeline=reporting",
+        bash_command="cd /app && kedro run --pipeline=reporting",
     )
+
 
     # Dependencias
     data_engineering >> feature_engineering >> feature_selection

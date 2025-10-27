@@ -16,15 +16,13 @@ WORKDIR /app
 # 4️⃣ Copiar todo el proyecto
 COPY . /app
 
-# 5️⃣ Instalar dependencias del sistema
-RUN apt-get update && \
-    apt-get install -y build-essential git curl && \
-    apt-get clean
+# 5️⃣ Instalar herramientas base y actualizar pip
+RUN apt-get update && apt-get install -y build-essential libffi-dev libssl-dev && \
+    pip install --upgrade pip setuptools wheel && \
+    rm -rf /var/lib/apt/lists/*
 
-# 6️⃣ Instalar dependencias de Python
-RUN pip install --upgrade pip setuptools wheel \
-    && pip install kedro==0.19.4 apache-airflow==2.7.1 dvc[all]==3.53.2 pendulum==2.1.2 Flask-Session==0.4.0 connexion==2.14.2 \
-    && pip install scikit-learn==1.3.2 xgboost==2.1.0 pandas==2.1.4 numpy==1.26.4 matplotlib seaborn joblib
+# 6️⃣ Instalar dependencias del entorno Docker (versión ligera y estable)
+RUN pip install --no-cache-dir -r requirements_docker.txt
 
 # 7️⃣ Inicializar Airflow (DB y usuario admin)
 RUN airflow db init && \
@@ -36,13 +34,12 @@ RUN airflow db init && \
         --email kevin@example.com \
         --password 1234
 
-# 8️⃣ Exponer puertos de Airflow
-EXPOSE 8080
-
-# 9️⃣ Copiar DAGs al directorio de Airflow
+# 8️⃣ Crear carpeta para DAGs y copiar los archivos
 RUN mkdir -p /usr/local/airflow/dags
 COPY dags/* /usr/local/airflow/dags/
 
+# 9️⃣ Exponer puertos (Airflow Web UI)
+EXPOSE 8080
 
-# 1️⃣0️⃣ Comando por defecto
+# 🔟 Comando por defecto: iniciar Airflow webserver + scheduler
 CMD ["bash", "-c", "airflow webserver -p 8080 & airflow scheduler"]
