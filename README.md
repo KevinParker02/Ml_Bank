@@ -19,8 +19,10 @@ source venv/bin/activate
 # Instalamos las dependencias
 pip install -r requirements.txt
 
-# DEBEMOS ingresar a la carpeta del proyecto
+# DEBEMOS ingresar a la carpeta del proyecto (En esta ruta se pueden ejecutar Kedro o Airflow)
 cd proyecto-ml-sebastiancarrera-kevinvivanco
+
+**Ejecución solo con Kedro**
 
 # Verificamos la instalación de Kedro
 kedro info
@@ -33,6 +35,30 @@ jupyter notebook
 
 # Visualizar los pipelines
 kedro viz
+
+**Ejecución con Docker + Airflow**
+# Ejecuta la aplicación de Docker (Segundo plano)
+
+# No activar el entorno virtual en VScode.
+
+# Ejecutar el contenedor de Docker desde VS Code
+docker build -t ml_bank_image .
+
+# Correr la interfaz de Airflow
+docker run -it -p 8080:8080 ml_bank_image
+
+# En la aplicación de Docker
+Ingresar al enlace de Airflow (haciendo clic en "8080:8080")
+
+# En la interfaz de Airflow
+ingresar con "admin" y "1234".
+
+# Buscar "kedro_pipeline_ml_bank"
+Y dentro hace click en el botón de PLAY y comenzará a ejecutar todas las tasks, donde igual podrás ver los DAGS y los Logs
+
+# Acotación
+- Una vez creada la imagen queda almacenada en Docker, no es necesario volver hacer los pasos anteriores a no ser que se modifique algún proceso o pipeline. Así mismo, desde la interfáz de Docker uno ejecuta la imagen creada (Botón de PLAY) y una vez realizada la ejecución de las Tasks en Airflow quedan almacenados en "files > app" de Docker.
+
 ```
 
 ---
