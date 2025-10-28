@@ -97,3 +97,13 @@ rf_regressor_model_path: "data/06_models/regresion/rf_regressor_model.pkl"
 
 # --- XGBoost Regressor ---
 xgb_regressor_model_path: "data/06_models/regresion/xgb_regressor_model.pkl"
+
+
+
+#Reporting Nuevo - EV2 (Todavia no se elimina el de arriba porque falta comprobar que no rompera código :D)
+reporting_config:
+  classification_results_path: data/07_model_output/clasificacion
+  regression_results_path: data/07_model_output/regresion
+  classification_images_path: data/08_reporting/clasificacion
+  regression_images_path: data/08_reporting/regresion
+  dashboard_output_path: data/08_reporting/dashboard

@@ -18,28 +18,6 @@ from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 
 
-# =========================================================
-#  Función auxiliar para evaluación
-# =========================================================
-def evaluate_regression_model(model, X_train, X_test, y_train, y_test):
-    """Entrena el modelo, evalúa con CV y test, y retorna métricas."""
-    cv = KFold(n_splits=5, shuffle=True, random_state=42)
-    cv_r2 = cross_val_score(model, X_train, y_train, cv=cv, scoring="r2")
-    cv_rmse = np.sqrt(-cross_val_score(model, X_train, y_train, cv=cv, scoring="neg_mean_squared_error"))
-
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-
-    results = {
-        "r2_mean_cv": float(cv_r2.mean()),
-        "r2_std_cv": float(cv_r2.std()),
-        "r2_test": float(r2_score(y_test, y_pred)),
-        "rmse": float(np.sqrt(mean_squared_error(y_test, y_pred))),
-        "mae": float(mean_absolute_error(y_test, y_pred))
-    }
-
-    return model, results, y_pred
-
 
 def train_linear_regression(df: pd.DataFrame, linear_model_path: str) -> dict:
     """
