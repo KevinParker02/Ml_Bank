@@ -1,7 +1,9 @@
+import os
 import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
@@ -27,6 +29,41 @@ from sklearn.metrics import (
     roc_curve
 )
 
+
+# =========================================================
+# Función auxiliar para guardar curvas y matrices
+# =========================================================
+def save_classification_plots(model_name, pipe, X_test, y_test, y_pred):
+    """Guarda la curva ROC y la matriz de confusión para un modelo dado."""
+    os.makedirs("data/08_reporting/clasificacion", exist_ok=True)
+
+    # --- Curva ROC ---
+    if hasattr(pipe.named_steps["model"], "predict_proba"):
+        y_prob = pipe.predict_proba(X_test)[:, 1]
+        fpr, tpr, _ = roc_curve(y_test, y_prob)
+        auc = roc_auc_score(y_test, y_prob)
+
+        plt.figure(figsize=(6, 6))
+        plt.plot(fpr, tpr, color="darkorange", lw=2, label=f"ROC (AUC = {auc:.2f})")
+        plt.plot([0, 1], [0, 1], color="gray", linestyle="--")
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title(f"Curva ROC – {model_name}")
+        plt.legend(loc="lower right")
+        plt.tight_layout()
+        plt.savefig(f"data/08_reporting/clasificacion/{model_name.lower()}_roc_curve.png")
+        plt.close()
+
+    # --- Matriz de confusión ---
+    cm = confusion_matrix(y_test, y_pred)
+    cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["No Fraude", "Fraude"])
+    cm_display.plot(cmap="Blues")
+    plt.title(f"Matriz de Confusión – {model_name}")
+    plt.tight_layout()
+    plt.savefig(f"data/08_reporting/clasificacion/{model_name.lower()}_confusion_matrix.png")
+    plt.close()
+
+
 # =========================================================
 # Nodo 1 – KNN
 # =========================================================
@@ -47,8 +84,6 @@ def train_knn_classifier(df: pd.DataFrame, knn_model_path: str) -> dict:
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     scores = cross_val_score(pipe, X, y, cv=cv, scoring="f1")
 
-    print(f"F1 promedio CV: {scores.mean():.4f} ± {scores.std():.4f}")
-
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
     pipe.fit(X_train, y_train)
     joblib.dump(pipe, knn_model_path)
@@ -57,6 +92,8 @@ def train_knn_classifier(df: pd.DataFrame, knn_model_path: str) -> dict:
     report = classification_report(y_test, y_pred, output_dict=True)
     cm = confusion_matrix(y_test, y_pred).tolist()
 
+    save_classification_plots("KNeighborsClassifier", pipe, X_test, y_test, y_pred)
+
     return {
         "model_name": "KNeighborsClassifier",
         "f1_mean_cv": float(scores.mean()),
@@ -64,6 +101,7 @@ def train_knn_classifier(df: pd.DataFrame, knn_model_path: str) -> dict:
         "report": report,
         "confusion_matrix": cm
     }
+
 
 # =========================================================
 # Nodo 2 – DecisionTreeClassifier
@@ -104,6 +142,8 @@ def train_decision_tree(df: pd.DataFrame, dt_model_path: str) -> dict:
 
     joblib.dump(final_model, dt_model_path)
 
+    save_classification_plots("DecisionTreeClassifier", final_model, X_test, y_test, y_pred)
+
     return {
         "model_name": "DecisionTreeClassifier",
         "f1_mean_cv": float(scores.mean()),
@@ -114,6 +154,7 @@ def train_decision_tree(df: pd.DataFrame, dt_model_path: str) -> dict:
         "report": report,
         "confusion_matrix": cm
     }
+
 
 # =========================================================
 # Nodo 3 – RandomForestClassifier
@@ -143,6 +184,8 @@ def train_random_forest(df: pd.DataFrame, rf_model_path: str) -> dict:
 
     joblib.dump(pipe, rf_model_path)
 
+    save_classification_plots("RandomForestClassifier", pipe, X_test, y_test, y_pred)
+
     return {
         "model_name": "RandomForestClassifier",
         "f1_mean_cv": float(scores.mean()),
@@ -151,6 +194,7 @@ def train_random_forest(df: pd.DataFrame, rf_model_path: str) -> dict:
         "report": report,
         "confusion_matrix": cm
     }
+
 
 # =========================================================
 # Nodo 4 – XGBoostClassifier
@@ -180,6 +224,8 @@ def train_xgboost_classifier(df: pd.DataFrame, xgb_model_path: str) -> dict:
 
     joblib.dump(pipe, xgb_model_path)
 
+    save_classification_plots("XGBClassifier", pipe, X_test, y_test, y_pred)
+
     return {
         "model_name": "XGBClassifier",
         "f1_mean_cv": float(scores.mean()),
@@ -188,6 +234,7 @@ def train_xgboost_classifier(df: pd.DataFrame, xgb_model_path: str) -> dict:
         "report": report,
         "confusion_matrix": cm
     }
+
 
 # =========================================================
 # Nodo 5 – MLPClassifier
@@ -218,6 +265,8 @@ def train_mlp_classifier(df: pd.DataFrame, mlp_model_path: str) -> dict:
     auc = roc_auc_score(y_test, pipe.predict_proba(X_test)[:, 1])
 
     joblib.dump(pipe, mlp_model_path)
+
+    save_classification_plots("MLPClassifier", pipe, X_test, y_test, y_pred)
 
     return {
         "model_name": "MLPClassifier",
