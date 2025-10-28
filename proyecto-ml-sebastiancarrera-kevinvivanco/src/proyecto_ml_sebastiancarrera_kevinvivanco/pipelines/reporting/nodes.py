@@ -3,6 +3,7 @@ import glob
 import joblib
 from IPython.display import display, HTML
 
+
 def generate_model_dashboard(reporting_config: dict):
     """Genera un dashboard visual combinando resultados de clasificación y regresión."""
 
@@ -58,7 +59,7 @@ def generate_model_dashboard(reporting_config: dict):
                 for img in os.listdir(class_img_path):
                     if img.lower().startswith(name.lower()):
                         imgs.append(f"<img src='../clasificacion/{img}' alt='{img}'>")
-            img_html = "".join(imgs)
+            img_html = "".join(imgs) if imgs else "<em style='color:gray'>⚠️ No se encontraron gráficos</em>"
 
             html += f"""
             <tr>
@@ -86,13 +87,33 @@ def generate_model_dashboard(reporting_config: dict):
             rmse = res["rmse"]
             mae = res["mae"]
 
-            # Buscar imágenes (scatter, errores, etc.)
+            # --- Buscar imágenes asociadas al modelo ---
             imgs = []
             if os.path.exists(reg_img_path):
+                key = name.lower().replace(" ", "").replace("_", "")
+
+                # Diccionario de alias exactos por modelo
+                alias_map = {
+                    "linearregression": ["linear_regression"],
+                    "ridgeregression": ["ridge_regressor"],
+                    "lassoregression": ["lasso_regressor"],
+                    "randomforestregressor": ["rf_regressor", "random_forest_regressor"],
+                    "xgbregressor": ["xgb_regressor", "xgboost_regressor"]
+                }
+
+                # Lista de patrones a buscar
+                variants = [key]
+                if key in alias_map:
+                    variants.extend(alias_map[key])
+
+                # Buscar solo archivos que empiecen con esos nombres
                 for img in os.listdir(reg_img_path):
-                    if img.lower().startswith(name.lower().replace("regressor", "")):
+                    img_lower = img.lower()
+                    if any(img_lower.startswith(v) for v in variants):
                         imgs.append(f"<img src='../regresion/{img}' alt='{img}'>")
-            img_html = "".join(imgs)
+
+            # Si no hay imágenes, mostrar aviso
+            img_html = "".join(imgs) if imgs else "<em style='color:gray'>⚠️ No se encontraron gráficos</em>"
 
             html += f"""
             <tr>

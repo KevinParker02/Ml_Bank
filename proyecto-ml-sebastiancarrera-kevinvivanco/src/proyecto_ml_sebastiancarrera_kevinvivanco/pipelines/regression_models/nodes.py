@@ -22,7 +22,7 @@ from xgboost import XGBRegressor
 def train_linear_regression(df: pd.DataFrame, linear_model_path: str) -> dict:
     """
     Entrena un modelo de Regresión Lineal Múltiple para predecir Monetary.
-    Guarda el modelo, los resultados y genera un gráfico de validación.
+    Guarda el modelo, los resultados y genera gráficos de validación y residuos.
     """
 
     # =========================================================
@@ -82,9 +82,11 @@ def train_linear_regression(df: pd.DataFrame, linear_model_path: str) -> dict:
     joblib.dump(model, linear_model_path)
 
     # =========================================================
-    # 7️⃣ Generar gráfico de comparación
+    # 7️⃣ Generar gráficos
     # =========================================================
     os.makedirs("data/08_reporting/regresion", exist_ok=True)
+
+    # --- Scatterplot: reales vs predichos
     plt.figure(figsize=(6, 6))
     sns.scatterplot(x=y_test, y=y_pred, alpha=0.3)
     plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], "r--", lw=2)
@@ -93,6 +95,18 @@ def train_linear_regression(df: pd.DataFrame, linear_model_path: str) -> dict:
     plt.title("Regresión Lineal – Reales vs Predichos")
     plt.tight_layout()
     plt.savefig("data/08_reporting/regresion/linear_regression_scatter.png")
+    plt.close()
+
+    # --- Histograma de errores (residuos)
+    residuals = y_test - y_pred
+    plt.figure(figsize=(8, 5))
+    sns.histplot(residuals, bins=50, kde=True, color="cornflowerblue")
+    plt.axvline(0, color="red", linestyle="--", lw=2)
+    plt.xlabel("Error (valor real - predicho)")
+    plt.ylabel("Frecuencia")
+    plt.title("Distribución de errores – Linear Regression")
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/regresion/linear_regression_residuals.png")
     plt.close()
 
     return results
