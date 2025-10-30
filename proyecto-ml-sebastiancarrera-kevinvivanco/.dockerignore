@@ -1,0 +1,50 @@
+# ===========================
+# IGNORAR DATA EXCEPTO 01_RAW
+# ===========================
+
+# Ignorar todo el contenido de data
+data/**
+
+# Mantener estructura de carpetas
+!data/**/
+!data/.gitkeep
+
+# ===========================
+# PERMITIR SOLO 01_RAW COMPLETO
+# ===========================
+!data/01_raw/**
+!data/01_raw/.gitkeep
+
+# ===========================
+# BLOQUEAR ARCHIVOS EN 02 A 05
+# ===========================
+data/02_intermediate/**
+!data/02_intermediate/.gitkeep
+
+data/03_primary/**
+!data/03_primary/.gitkeep
+
+data/04_feature/**
+!data/04_feature/.gitkeep
+
+data/05_model_input/**
+!data/05_model_input/.gitkeep
+
+# ===========================
+# 06, 07, 08 → Mantener subcarpetas sin archivos
+# ===========================
+data/06_models/**
+data/07_model_output/**
+data/08_reporting/**
+
+!data/06_models/**/
+!data/07_model_output/**/
+!data/08_reporting/**/
+!data/06_models/.gitkeep
+!data/07_model_output/.gitkeep
+!data/08_reporting/.gitkeep
+
+# ===========================
+# EXCEPCIÓN: eliminar dashboard completo
+# ===========================
+data/08_reporting/dashboard/
