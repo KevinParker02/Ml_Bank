@@ -1,24 +1,33 @@
 ##########################
-# KEDRO PROJECT
+# KEDRO + DVC PROJECT
+##########################
 
-# ignore all local configuration
+# Ignore all local configuration
 conf/local/**
 !conf/local/.gitkeep
 
-# ignore potentially sensitive credentials files
+# Ignore potentially sensitive credentials files
 conf/**/*credentials*
 .env
 
-# ignore all data folders, but keep DVC tracking
+##########################
+# DATA FOLDERS (KEDRO)
+##########################
+
+# ❌ Ignorar todo el contenido dentro de data/
 data/**
+
+# ✅ Pero mantener las carpetas (estructura)
 !data/**/
+!data/**/.gitkeep
+
+# ✅ Mantener archivos de tracking de DVC (.dvc, .json)
 !data/**/*.dvc
 !data/**/*.json
+
+# ✅ Mantener este propio .gitignore y .gitkeep de la raíz
 !.gitignore
 !.gitkeep
-
-# Keep any .gitkeep files (for empty folders)
-!data/**/.gitkeep"
 
 # also keep the example dataset
 !data/01_raw/companies.csv
