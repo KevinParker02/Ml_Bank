@@ -8,17 +8,17 @@ conf/local/**
 # ignore potentially sensitive credentials files
 conf/**/*credentials*
 .env
-# ignore everything in the following folders
+
+# ignore all data folders, but keep DVC tracking
 data/**
-
-# except their sub-folders
 !data/**/
-
-# also keep all .gitkeep files
+!data/**/*.dvc
+!data/**/*.json
+!.gitignore
 !.gitkeep
 
 # Keep any .gitkeep files (for empty folders)
-!data/**/.gitkeep
+!data/**/.gitkeep"
 
 # also keep the example dataset
 !data/01_raw/companies.csv

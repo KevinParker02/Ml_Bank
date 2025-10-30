@@ -1,0 +1,78 @@
+stages:
+  # =====================================================
+  # 1️⃣ Data Engineering
+  # =====================================================
+  data_engineering:
+    cmd: kedro run --pipeline=data_engineering
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/data_engineering
+    outs:
+      - data/02_intermediate
+      - data/03_primary
+
+  # =====================================================
+  # 2️⃣ Feature Engineering
+  # =====================================================
+  feature_engineering:
+    cmd: kedro run --pipeline=feature_engineering
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_engineering
+      - data/03_primary
+    outs:
+      - data/04_feature
+
+  # =====================================================
+  # 3️⃣ Feature Selection / Model Input
+  # =====================================================
+  model_input:
+    cmd: kedro run --pipeline=feature_selection
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_selection
+      - data/04_feature
+    outs:
+      - data/05_model_input
+
+  # =====================================================
+  # 4️⃣ Clasificación (Modelos de detección de fraude)
+  # =====================================================
+  classification_models:
+    cmd: kedro run --pipeline=classification_models
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/classification_models
+      - data/05_model_input
+    outs:
+      - data/06_models/clasificacion:
+          persist: true
+      - data/07_model_output/clasificacion:
+          persist: true
+
+  # =====================================================
+  # 5️⃣ Regresión (Predicción de valores monetarios)
+  # =====================================================
+  regression_models:
+    cmd: kedro run --pipeline=regression_models
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/regression_models
+      - data/05_model_input
+    outs:
+      - data/06_models/regresion:
+          persist: true
+      - data/07_model_output/regresion:
+          persist: true
+
+  # =====================================================
+  # 6️⃣ Reporting (Dashboard final)
+  # =====================================================
+  reporting:
+    cmd: kedro run --pipeline=reporting
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/reporting
+      - data/06_models/clasificacion
+      - data/06_models/regresion
+      - data/08_reporting/clasificacion
+      - data/08_reporting/regresion
+    outs:
+      - data/08_reporting/dashboard/model_dashboard.html:
+          persist: true
+
+
