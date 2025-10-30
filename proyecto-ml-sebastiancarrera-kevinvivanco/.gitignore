@@ -17,7 +17,7 @@ conf/**/*credentials*
 # ❌ Ignorar todo el contenido dentro de data/
 data/**
 
-# ✅ Pero mantener las carpetas (estructura)
+# ✅ Pero mantener las carpetas vacías
 !data/**/
 !data/**/.gitkeep
 
@@ -25,7 +25,7 @@ data/**
 !data/**/*.dvc
 !data/**/*.json
 
-# ✅ Mantener este propio .gitignore y .gitkeep de la raíz
+# ✅ Mantener este archivo y el .gitkeep global
 !.gitignore
 !.gitkeep
 

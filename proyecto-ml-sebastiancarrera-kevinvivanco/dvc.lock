@@ -12,22 +12,22 @@ stages:
     outs:
     - path: data/02_intermediate
       hash: md5
-      md5: 2c63e14db6a06d8b21f7d7bb0f7e444d.dir
-      size: 44428123
-      nfiles: 3
+      md5: 5dcd493376b61dcb26f4dffbb70b14f7.dir
+      size: 88856252
+      nfiles: 7
     - path: data/03_primary
       hash: md5
-      md5: 6ef40e90cefaf46d8e9c82f9089ae8a7.dir
-      size: 132026564
-      nfiles: 7
+      md5: e4013557c6f4975b3af475cf461b38b2.dir
+      size: 180919837
+      nfiles: 11
   feature_engineering:
     cmd: kedro run --pipeline=feature_engineering
     deps:
     - path: data/03_primary
       hash: md5
-      md5: 6ef40e90cefaf46d8e9c82f9089ae8a7.dir
-      size: 132026564
-      nfiles: 7
+      md5: e4013557c6f4975b3af475cf461b38b2.dir
+      size: 180919837
+      nfiles: 11
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_engineering
       hash: md5
@@ -37,17 +37,17 @@ stages:
     outs:
     - path: data/04_feature
       hash: md5
-      md5: 0f8bfb95bd35731a33273a8739c735b0.dir
-      size: 49796010
-      nfiles: 1
+      md5: aa84e3261c61fbb0ef97686f33e26321.dir
+      size: 49796016
+      nfiles: 2
   model_input:
     cmd: kedro run --pipeline=feature_selection
     deps:
     - path: data/04_feature
       hash: md5
-      md5: 0f8bfb95bd35731a33273a8739c735b0.dir
-      size: 49796010
-      nfiles: 1
+      md5: aa84e3261c61fbb0ef97686f33e26321.dir
+      size: 49796016
+      nfiles: 2
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_selection
       hash: md5
@@ -57,9 +57,9 @@ stages:
     outs:
     - path: data/05_model_input
       hash: md5
-      md5: 0ee91f3e7bdb2fe8a98464b512057309.dir
-      size: 25555388
-      nfiles: 2
+      md5: b5b3c303e57bab09200304a9f60a943b.dir
+      size: 25555394
+      nfiles: 3
   classification_models:
     cmd: kedro run --pipeline=classification_models
     deps:

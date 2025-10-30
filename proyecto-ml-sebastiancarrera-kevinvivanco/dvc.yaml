@@ -7,8 +7,10 @@ stages:
     deps:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/data_engineering
     outs:
-      - data/02_intermediate
-      - data/03_primary
+      - data/02_intermediate:
+          persist: true
+      - data/03_primary:
+          persist: true
 
   # =====================================================
   # 2️⃣ Feature Engineering
@@ -19,7 +21,8 @@ stages:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_engineering
       - data/03_primary
     outs:
-      - data/04_feature
+      - data/04_feature:
+          persist: true
 
   # =====================================================
   # 3️⃣ Feature Selection / Model Input
@@ -30,7 +33,8 @@ stages:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_selection
       - data/04_feature
     outs:
-      - data/05_model_input
+      - data/05_model_input:
+          persist: true
 
   # =====================================================
   # 4️⃣ Clasificación (Modelos de detección de fraude)
@@ -74,5 +78,3 @@ stages:
     outs:
       - data/08_reporting/dashboard/model_dashboard.html:
           persist: true
-
-
