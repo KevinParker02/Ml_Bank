@@ -5,6 +5,8 @@ import numpy as np
 # =========================================================
 # 🗂️ 0️⃣ Verificación y creación de carpetas (excepto 01_raw)
 # =========================================================
+import os
+
 def ensure_data_folders(base_path="data"):
     folders = {
         "02_intermediate": [],
@@ -21,11 +23,8 @@ def ensure_data_folders(base_path="data"):
         os.makedirs(folder_path, exist_ok=True)
         for sub in subfolders:
             os.makedirs(os.path.join(folder_path, sub), exist_ok=True)
-        # Crear .gitkeep si no existe
-        gitkeep = os.path.join(folder_path, ".gitkeep")
-        if not os.path.exists(gitkeep):
-            open(gitkeep, "a").close()
 
+ensure_data_folders()
 
 # =========================================================
 # 1️⃣ Limpieza inicial

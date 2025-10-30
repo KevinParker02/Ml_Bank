@@ -6,60 +6,60 @@ stages:
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/data_engineering
       hash: md5
-      md5: bd0d35f3ecbfae7b4eca0c2aaa828954.dir
-      size: 12300
+      md5: 8b69ca6b200557d24ba6db9b0f6c6b32.dir
+      size: 14004
       nfiles: 6
     outs:
     - path: data/02_intermediate
       hash: md5
-      md5: 5dcd493376b61dcb26f4dffbb70b14f7.dir
-      size: 88856252
-      nfiles: 7
+      md5: 5b2421540b16f5832b4122baae6c838b.dir
+      size: 44428123
+      nfiles: 3
     - path: data/03_primary
       hash: md5
-      md5: e4013557c6f4975b3af475cf461b38b2.dir
-      size: 180919837
-      nfiles: 11
+      md5: d1d12d1106597516dd06000e6966ec22.dir
+      size: 132026564
+      nfiles: 7
   feature_engineering:
     cmd: kedro run --pipeline=feature_engineering
     deps:
     - path: data/03_primary
       hash: md5
-      md5: e4013557c6f4975b3af475cf461b38b2.dir
-      size: 180919837
-      nfiles: 11
+      md5: d1d12d1106597516dd06000e6966ec22.dir
+      size: 132026564
+      nfiles: 7
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_engineering
       hash: md5
-      md5: 98cf7dfd28d124ff356f9e9cf4148152.dir
-      size: 11982
+      md5: 3e543bd911e73e9cb4c8c08ddb30b4f8.dir
+      size: 13686
       nfiles: 6
     outs:
     - path: data/04_feature
       hash: md5
-      md5: aa84e3261c61fbb0ef97686f33e26321.dir
-      size: 49796016
-      nfiles: 2
+      md5: 0f8bfb95bd35731a33273a8739c735b0.dir
+      size: 49796010
+      nfiles: 1
   model_input:
     cmd: kedro run --pipeline=feature_selection
     deps:
     - path: data/04_feature
       hash: md5
-      md5: aa84e3261c61fbb0ef97686f33e26321.dir
-      size: 49796016
-      nfiles: 2
+      md5: 0f8bfb95bd35731a33273a8739c735b0.dir
+      size: 49796010
+      nfiles: 1
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_selection
       hash: md5
-      md5: d2100b6c8e84da174c1d5d3e467a305e.dir
-      size: 5857
+      md5: 7bd8def9aae3aaba8ce175bdb50a7d45.dir
+      size: 7563
       nfiles: 6
     outs:
     - path: data/05_model_input
       hash: md5
-      md5: b5b3c303e57bab09200304a9f60a943b.dir
-      size: 25555394
-      nfiles: 3
+      md5: 0ee91f3e7bdb2fe8a98464b512057309.dir
+      size: 25555388
+      nfiles: 2
   classification_models:
     cmd: kedro run --pipeline=classification_models
     deps:
@@ -71,20 +71,20 @@ stages:
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/classification_models
       hash: md5
-      md5: ea26bda6e463fd064076c660bba92cc6.dir
-      size: 26606
+      md5: c0925c1b411f777ca37ea54e769e7488.dir
+      size: 28270
       nfiles: 6
     outs:
     - path: data/06_models/clasificacion
       hash: md5
-      md5: e44175ebdbbae7cfcc3a450374709817.dir
+      md5: ec43e274b4fcf4744e3d068fb4c66d45.dir
       size: 741615731
-      nfiles: 6
+      nfiles: 5
     - path: data/07_model_output/clasificacion
       hash: md5
-      md5: 74bd920b270599119fa028ca1935747d.dir
+      md5: d70bd80cebf8b99a310a44200978ae72.dir
       size: 2349
-      nfiles: 6
+      nfiles: 5
   regression_models:
     cmd: kedro run --pipeline=regression_models
     deps:
@@ -96,50 +96,46 @@ stages:
     - path: 
         src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/regression_models
       hash: md5
-      md5: 1ca72e9cc0ae54e34e5f6359c01bc7bb.dir
-      size: 45241
+      md5: 32a5bd8abe94fa040191baf91ef741db.dir
+      size: 46905
       nfiles: 6
     outs:
     - path: data/06_models/regresion
       hash: md5
-      md5: 0325bd2c4033219abae36b6c3c64a676.dir
+      md5: bbb1fa43e14ad83a1553072b3610b6d4.dir
       size: 3104188490
-      nfiles: 6
+      nfiles: 5
     - path: data/07_model_output/regresion
       hash: md5
-      md5: 311fe89990d473450c80bba42dd02c9b.dir
+      md5: 69a31cc3a62b072121d94c44e873cc5d.dir
       size: 2010
-      nfiles: 6
-    - path: data/08_reporting/dashboard/model_dashboard.html
-      hash: md5
-      md5: dc32d774aea5bdd4180229e6b5c08778
-      size: 707
+      nfiles: 5
   reporting:
     cmd: kedro run --pipeline=reporting
     deps:
     - path: data/06_models/clasificacion
       hash: md5
-      md5: e44175ebdbbae7cfcc3a450374709817.dir
+      md5: ec43e274b4fcf4744e3d068fb4c66d45.dir
       size: 741615731
-      nfiles: 6
+      nfiles: 5
     - path: data/06_models/regresion
       hash: md5
-      md5: 0325bd2c4033219abae36b6c3c64a676.dir
+      md5: bbb1fa43e14ad83a1553072b3610b6d4.dir
       size: 3104188490
-      nfiles: 6
+      nfiles: 5
     - path: data/08_reporting/clasificacion
       hash: md5
-      md5: adcfc92bc6d470e9a8f9c481b97180ea.dir
-      size: 293729
-      nfiles: 11
+      md5: 960ef1c01b097223e927ff23c4559e72.dir
+      size: 293725
+      nfiles: 10
     - path: data/08_reporting/regresion
       hash: md5
-      md5: 35dd3bc6c564e92d7baa8f472e9c9777.dir
+      md5: da197f39d05efc416edc8c2b144234a7.dir
       size: 1713943
-      nfiles: 13
+      nfiles: 12
     - path: src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/reporting
       hash: md5
-      md5: 9c17b80094adf4e0fc162dab6935ad8c.dir
+      md5: 13e4b980235470543857d325620a108c.dir
       size: 14183
       nfiles: 6
     outs:

@@ -1,5 +1,30 @@
+import os
 import pandas as pd
 import numpy as np
+
+# =========================================================
+# 🗂️ 0️⃣ Verificación y creación de carpetas (excepto 01_raw)
+# =========================================================
+import os
+
+def ensure_data_folders(base_path="data"):
+    folders = {
+        "02_intermediate": [],
+        "03_primary": [],
+        "04_feature": [],
+        "05_model_input": [],
+        "06_models": ["clasificacion", "regresion"],
+        "07_model_output": ["clasificacion", "regresion"],
+        "08_reporting": ["clasificacion", "regresion"],
+    }
+
+    for folder, subfolders in folders.items():
+        folder_path = os.path.join(base_path, folder)
+        os.makedirs(folder_path, exist_ok=True)
+        for sub in subfolders:
+            os.makedirs(os.path.join(folder_path, sub), exist_ok=True)
+
+ensure_data_folders()
 
 # =========================================================
 # 1️⃣ Cargar y comparar datasets
