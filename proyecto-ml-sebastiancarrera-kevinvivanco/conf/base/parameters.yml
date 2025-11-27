@@ -98,7 +98,76 @@ rf_regressor_model_path: "data/06_models/regresion/rf_regressor_model.pkl"
 # --- XGBoost Regressor ---
 xgb_regressor_model_path: "data/06_models/regresion/xgb_regressor_model.pkl"
 
+#Para clustering
+#dbscan
+pca_dbscan:
+  n_sample: 50000
+  features:
+    - AmountZScoreByLocation
+    - IsAnomaly
+    - IsLateNight
+    - IsWeekend
+  target: is_fraud
 
+  dbscan:
+    eps: 0.2
+    min_samples: 5
+
+  outputs:
+    figure_path: data/07_model_output/clustering/dbscan_pca_clusters.png
+#optics
+pca_optics:
+  n_sample: 50000
+
+  features:
+    - AmountZScoreByLocation
+    - IsAnomaly
+    - IsLateNight
+    - IsWeekend
+
+  target: is_fraud
+
+  optics:
+    min_samples: 50
+    xi: 0.05
+    min_cluster_size: 0.02
+
+  outputs:
+    figure_path: data/07_model_output/clustering/optics_pca_clusters.png
+#pca kameans
+pca_kmeans:
+  n_sample: 50000
+
+  features:
+    - AmountZScoreByLocation
+    - IsAnomaly
+    - IsLateNight
+    - IsWeekend
+
+  target: is_fraud
+
+  kmeans:
+    k_range: [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    k_final: 6
+
+  outputs:
+    figure_path: data/07_model_output/clustering/kmeans_pca_clusters.png
+
+# =========================
+# t-SNE y asignación de clusters K-Means
+# =========================
+clustering:
+  target: is_fraud
+  features:
+    - AmountZScoreByLocation
+    - IsAnomaly
+    - IsLateNight
+    - IsWeekend
+
+  tsne:
+    perplexity: 50
+    learning_rate: auto
+    n_iter: 1000
 
 #Reporting Nuevo - EV2 (Todavia no se elimina el de arriba porque falta comprobar que no rompera código :D)
 reporting_config:

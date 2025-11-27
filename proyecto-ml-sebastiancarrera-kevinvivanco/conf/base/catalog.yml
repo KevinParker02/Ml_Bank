@@ -223,3 +223,71 @@ xgb_regressor_results:
 
 
 
+#pipeline clustering
+#dbscan
+dbscan_pca_labels:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/dbscan_pca_labels.csv
+
+dbscan_fraud_by_cluster:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/dbscan_fraud_by_cluster.csv
+
+dbscan_metrics:
+  type: json.JSONDataset
+  filepath: data/07_model_output/clustering/dbscan_metrics.json
+#optics
+optics_pca_labels:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/optics_pca_labels.csv
+
+optics_fraud_by_cluster:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/optics_fraud_by_cluster.csv
+
+optics_metrics:
+  type: json.JSONDataset
+  filepath: data/07_model_output/clustering/optics_metrics.json
+#kmeans pca
+kmeans_metrics:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/kmeans_metrics.csv
+
+kmeans_diagnostics:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/kmeans_diagnostics.csv
+
+kmeans_pca_clusters:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/clustering/kmeans_pca_clusters.parquet
+
+kmeans_fraud_by_cluster:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/kmeans_fraud_by_cluster.csv
+
+# === t-SNE KMeans (visualización) ===
+kmeans_tsne_embedding:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/kmeans_tsne_embedding.csv
+
+kmeans_fraud_by_cluster_tsne:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/kmeans_fraud_by_cluster_tsne.csv
+
+# === Objetos KMeans entrenados ===
+kmeans_model:
+  type: pickle.PickleDataset
+  filepath: data/06_models/clustering/kmeans_model.pkl
+
+kmeans_scaler:
+  type: pickle.PickleDataset
+  filepath: data/06_models/clustering/kmeans_scaler.pkl
+
+kmeans_labels:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering/kmeans_labels.csv
+
+kmeans_X_scaled:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/clustering/kmeans_X_scaled.parquet
+
