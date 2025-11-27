@@ -156,6 +156,11 @@ Features_training_v2:
   type: pandas.ParquetDataset
   filepath: data/05_model_input/Features_training_v2.parquet
 
+#Este es el dataframe contiene la variable cluster creada en la etapa de clustering :P
+Features_clustering_v1:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/Features_clustering_v1.parquet
+
 
 # ======================================================================================
   # Guardados en 07_model_output como PickleDataset (.pkl) para modelos de clasificación
