@@ -54,17 +54,14 @@ dvc repro
 **Ejecución con Docker + Airflow**
 # Ejecuta la aplicación de Docker (Segundo plano) y en VScode No activar el entorno virtual en VScode.
 
-# Ejecutar el contenedor de Docker desde VS Code
-docker build -t ml_bank_image .
-
-# Correr la interfaz de Airflow
-docker run -it -p 8080:8080 ml_bank_image
+# Ejecutar el contenedor de Docker + Airflow desde VS Code
+docker-compose up --build
 
 # En la aplicación de Docker
 Ingresar al enlace de Airflow (haciendo clic en "8080:8080")
 
 # En la interfaz de Airflow
-ingresar con "admin" y "1234".
+ingresar con "admin" y "1234".  
 
 # Buscar "kedro_pipeline_ml_bank"
 Y dentro hace click en el botón de PLAY y comenzará a ejecutar todas las tasks, donde igual podrás ver los DAGS y los Logs
