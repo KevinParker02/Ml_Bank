@@ -280,3 +280,140 @@ def run_unsupervised_learning(df: pd.DataFrame, params: dict) -> dict:
     # 👇 Kedro solo necesita el DataFrame final
     return df
 
+
+# =========================================================
+# 🧠 TASK 2: Evaluar mejor modelo de clasificación con Features_clustering_v1
+# =========================================================
+from xgboost import XGBClassifier
+from sklearn.model_selection import (
+    StratifiedKFold, cross_val_score, train_test_split
+)
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline
+from sklearn.metrics import (
+    classification_report, confusion_matrix,
+    ConfusionMatrixDisplay, roc_curve, roc_auc_score
+)
+
+def run_best_xgb_model(df, params):
+    """
+    Entrena y evalúa el mejor modelo XGBoost + SMOTE
+    usando Features_clustering_v1 generado previamente.
+    Guarda métricas, matriz de confusión y curva ROC-AUC.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import os
+    import joblib
+
+    os.makedirs("data/08_reporting/clasificacion", exist_ok=True)
+    os.makedirs("data/07_model_output/clasificacion", exist_ok=True)
+
+    # =========================================================
+    # 1️⃣ Preparar datos
+    # =========================================================
+    X = df.drop("is_fraud", axis=1)
+    y = df["is_fraud"]
+
+    neg, pos = (y == 0).sum(), (y == 1).sum()
+    ratio = neg / pos
+    print(f"Ratio clases (neg/pos): {ratio:.3f}")
+
+    # =========================================================
+    # 2️⃣ Pipeline SMOTE + XGBoost
+    # =========================================================
+    smote = SMOTE(random_state=42)
+
+    best_params = {
+        "subsample": 0.8,
+        "scale_pos_weight": ratio,
+        "n_estimators": 200,
+        "max_depth": 4,
+        "learning_rate": 0.1,
+        "colsample_bytree": 1.0,
+    }
+
+    xgb = XGBClassifier(
+        eval_metric="auc",
+        random_state=42,
+        n_jobs=-1,
+        tree_method="approx",
+        **best_params
+    )
+
+    pipe = Pipeline([
+        ("smote", smote),
+        ("model", xgb)
+    ])
+
+    # =========================================================
+    # 3️⃣ Cross-validation F1 score
+    # =========================================================
+    cv = StratifiedKFold(n_splits=2, shuffle=True, random_state=42)
+    scores = cross_val_score(pipe, X, y, cv=cv, scoring="f1", n_jobs=-1)
+    f1_mean, f1_std = scores.mean(), scores.std()
+    print(f"F1 promedio CV (2 folds): {f1_mean:.6f} ± {f1_std:.6f}")
+
+    # =========================================================
+    # 4️⃣ Entrenamiento final + evaluación
+    # =========================================================
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, stratify=y, random_state=42
+    )
+
+    print("\nEntrenando modelo final...")
+    pipe.fit(X_train, y_train)
+    y_pred = pipe.predict(X_test)
+
+    # --- Reporte
+    report = classification_report(y_test, y_pred, digits=3, output_dict=True)
+    print("\n📊 CLASSIFICATION REPORT (MEJOR MODELO)")
+    print(classification_report(y_test, y_pred, digits=3))
+
+    # --- Matriz de confusión
+    cm = confusion_matrix(y_test, y_pred)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["No Fraude", "Fraude"])
+    disp.plot(cmap="Blues")
+    plt.title("Matriz de Confusión – XGBoost + SMOTE")
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clasificacion/confusion_matrix_xgb.png", dpi=300)
+    plt.close()
+
+    # --- ROC–AUC
+    y_pred_proba = pipe.predict_proba(X_test)[:, 1]
+    fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+    auc_score = roc_auc_score(y_test, y_pred_proba)
+
+    plt.figure(figsize=(6, 5))
+    plt.plot(fpr, tpr, label=f"AUC = {auc_score:.3f}", linewidth=2)
+    plt.plot([0, 1], [0, 1], "k--", label="Azar (0.5)")
+    plt.xlabel("Falsos Positivos (FPR)")
+    plt.ylabel("Verdaderos Positivos (TPR)")
+    plt.title("Curva ROC – XGBoost + SMOTE")
+    plt.legend(loc="lower right")
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clasificacion/roc_auc_xgb.png", dpi=300)
+    plt.close()
+
+    # =========================================================
+    # 5️⃣ Guardar resultados
+    # =========================================================
+    results = {
+        "f1_mean_cv": round(f1_mean, 6),
+        "f1_std_cv": round(f1_std, 6),
+        "roc_auc": round(auc_score, 6),
+        "classification_report": report
+    }
+
+    import json
+    with open("data/07_model_output/clasificacion/xgb_final_metrics.json", "w") as f:
+        json.dump(results, f, indent=4)
+
+    # Guardar modelo entrenado
+    joblib.dump(pipe, "data/06_models/clasificacion/xgb_final_model.pkl")
+    print("✅ Modelo final y métricas guardadas correctamente.")
+
+    return df
+
+
