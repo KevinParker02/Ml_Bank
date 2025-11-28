@@ -326,7 +326,7 @@ def run_best_xgb_model(df, params):
 
     best_params = {
         "subsample": 0.8,
-        "scale_pos_weight": ratio,
+        "scale_pos_weight": 32.9976809915676,
         "n_estimators": 200,
         "max_depth": 4,
         "learning_rate": 0.1,
