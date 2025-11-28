@@ -13,7 +13,7 @@ default_args = {
 with DAG(
     dag_id="kedro_pipeline_ml_bank",
     default_args=default_args,
-    description="Orquestación de pipelines Kedro para ML_Bank (clasificación y regresión)",
+    description="Orquestación de pipelines Kedro para ML_Bank (clasificación, regresión y clustering)",
     schedule_interval=None,  # ejecución manual
     start_date=datetime(2025, 10, 1),
     catchup=False,
@@ -45,6 +45,11 @@ with DAG(
         bash_command="cd /app && kedro run --pipeline=regression_models",
     )
 
+    unsupervised_learning = BashOperator(
+        task_id="unsupervised_learning",
+        bash_command="cd /app && kedro run --pipeline=unsupervised_learning",
+    )
+
     reporting = BashOperator(
         task_id="reporting",
         bash_command="cd /app && kedro run --pipeline=reporting",
@@ -53,4 +58,4 @@ with DAG(
 
     # Dependencias
     data_engineering >> feature_engineering >> feature_selection
-    feature_selection >> [classification_models, regression_models] >> reporting
+    feature_selection >> [classification_models, regression_models] >> unsupervised_learning >> reporting
