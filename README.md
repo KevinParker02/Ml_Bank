@@ -4,9 +4,12 @@
 
 ### 🔹 1. Clonar el repositorio
 ```bash
-
 git clone https://github.com/tu-usuario/Ml_Bank.git
 cd Ml_Bank/proyecto-ml-sebastiancarrera-kevinvivanco
+
+# IMPORTANTE
+Antes de continuar debes colocar todos los .CSV dentro de la carpeta data/01_raw
+- Dataset: https://www.kaggle.com/datasets/tanmayjune/bank-customer-transaction-analysis?select=bank_customer_transactions.csv  
 
 # Crear entorno virtual
 python -m venv venv
@@ -79,7 +82,6 @@ y una vez realizada la ejecución de las Tasks en Airflow quedan almacenados en 
 
 Proyecto de Machine Learning con **Kedro** – Evaluación Parcial 1  
 Asignatura: *Machine Learning (MLY0100)* 
-Dataset: https://www.kaggle.com/datasets/tanmayjune/bank-customer-transaction-analysis?select=bank_customer_transactions.csv  
 
 ---
 
