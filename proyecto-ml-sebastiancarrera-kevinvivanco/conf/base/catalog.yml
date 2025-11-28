@@ -140,6 +140,12 @@ report_customer_final:
   load_args: { encoding: latin1 }
   save_args: { index: False, encoding: latin1 }
 
+unsupervised_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/unsupervised_features.parquet
+  save_args:
+    index: false
+
 report_rfm_final:
   type: pandas.CSVDataset
   filepath: data/08_reporting/report_rfm_final.csv

@@ -23,7 +23,6 @@ data/**
 
 # ✅ Mantener archivos de tracking de DVC (.dvc, .json)
 !data/**/*.dvc
-!data/**/*.json
 
 # ✅ Mantener este archivo y el .gitkeep global
 !.gitignore

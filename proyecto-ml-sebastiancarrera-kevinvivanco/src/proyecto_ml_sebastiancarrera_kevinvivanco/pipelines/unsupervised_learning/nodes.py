@@ -1,530 +1,282 @@
-# 📦 Manipulación de datos
-import pandas as pd
+# =========================================================
+# 🧩 Pipeline de Clustering No Supervisado (DBSCAN, OPTICS, K-Means)
+# =========================================================
+import os
 import numpy as np
-# 🎨 Visualización estática
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-# 🎨 Visualización interactiva
-import plotly.express as px
-import plotly.graph_objects as go
-# 🔢 Preprocesamiento y escalado
+
 from sklearn.preprocessing import StandardScaler
-# 🤖 Clustering
-from sklearn.cluster import KMeans, DBSCAN, OPTICS
-from typing import Dict
-# 📊 Métricas de clustering
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.cluster import DBSCAN, OPTICS, KMeans
 from sklearn.metrics import (
     silhouette_score,
     davies_bouldin_score,
     calinski_harabasz_score
 )
-# 🔻 Reducción de dimensionalidad
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-# 🌳 Jerárquico (para dendrogramas)
-from scipy.cluster.hierarchy import linkage, dendrogram
-# 📏 Distancias (para heatmaps de centroides)
-from scipy.spatial.distance import cdist
+
+# =========================================================
+# 🗂️ Creación de carpetas necesarias
+# =========================================================
+def ensure_data_folders(base_path="data"):
+    folders = {
+        "07_model_output": ["clustering"],
+        "08_reporting": ["clustering"],
+        "05_model_input": []
+    }
+    for folder, subfolders in folders.items():
+        path = os.path.join(base_path, folder)
+        os.makedirs(path, exist_ok=True)
+        for sub in subfolders:
+            os.makedirs(os.path.join(path, sub), exist_ok=True)
+
+ensure_data_folders()
 
 
-#Nodo de dbscan
-def pca_dbscan_clustering(
-    df: pd.DataFrame,
-    params: Dict,
-) -> Dict:
+# =========================================================
+# 🧠 Función principal (siguiendo el notebook 05)
+# =========================================================
+def run_unsupervised_learning(df: pd.DataFrame, params: dict) -> dict:
     """
-    PCA (2D) + DBSCAN clustering con métricas y visualización.
+    Ejecuta el pipeline completo de clustering:
+    - DBSCAN
+    - OPTICS
+    - KMeans
+    Reproduce el flujo del notebook 05, guardando resultados y gráficos.
     """
 
-    # --------------------------------------------------
-    # 1) SAMPLE
-    # --------------------------------------------------
-    n_sample = params.get("n_sample", 50_000)
-    df_sample = (
-        df.sample(n=n_sample, random_state=42)
-        if len(df) > n_sample
-        else df.copy()
-    )
+    # =========================================================
+    # 1️⃣ Muestra del dataset
+    # =========================================================
+    n_muestra = 50_000
+    df_sample = df.sample(n=n_muestra, random_state=42) if len(df) > n_muestra else df.copy()
+    print(f"Filas totales: {len(df)} | Filas usadas en análisis: {len(df_sample)}")
 
-    # --------------------------------------------------
-    # 2) FEATURES
-    # --------------------------------------------------
-    features = params["features"]
-    target = params["target"]
-
-    X = df_sample[features]
-    y = df_sample[target]
+    # =========================================================
+    # 2️⃣ Features y escalado
+    # =========================================================
+    X = df_sample[["AmountZScoreByLocation", "IsAnomaly", "IsLateNight", "IsWeekend"]]
+    y_sample = df_sample["is_fraud"]
 
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # --------------------------------------------------
-    # 3) PCA
-    # --------------------------------------------------
-    pca = PCA(n_components=2, random_state=42)
+    # =========================================================
+    # 3️⃣ PCA
+    # =========================================================
+    pca = PCA(n_components=2)
     X_pca = pca.fit_transform(X_scaled)
+    print("Shape X_pca:", X_pca.shape)
 
-    # --------------------------------------------------
-    # 4) DBSCAN
-    # --------------------------------------------------
-    dbscan = DBSCAN(
-        eps=params["dbscan"]["eps"],
-        min_samples=params["dbscan"]["min_samples"],
-    )
+    # =========================================================
+    # Helper: función para métricas
+    # =========================================================
+    def get_metrics(X, labels):
+        mask = labels != -1
+        if len(set(labels)) - (1 if -1 in labels else 0) > 1 and mask.sum() > 0:
+            sil = silhouette_score(X[mask], labels[mask])
+            db = davies_bouldin_score(X[mask], labels[mask])
+            ch = calinski_harabasz_score(X[mask], labels[mask])
+        else:
+            sil = db = ch = np.nan
+        return sil, db, ch
 
-    labels = dbscan.fit_predict(X_pca)
-
-    # --------------------------------------------------
-    # 5) MÉTRICAS (sin ruido)
-    # --------------------------------------------------
-    mask = labels != -1
-    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-    n_noise = int(np.sum(labels == -1))
-
-    if n_clusters > 1 and mask.sum() > 0:
-        metrics = {
-            "silhouette": float(silhouette_score(X_pca[mask], labels[mask])),
-            "davies_bouldin": float(davies_bouldin_score(X_pca[mask], labels[mask])),
-            "calinski_harabasz": float(calinski_harabasz_score(X_pca[mask], labels[mask])),
-        }
-    else:
-        metrics = {
-            "silhouette": np.nan,
-            "davies_bouldin": np.nan,
-            "calinski_harabasz": np.nan,
-        }
-
-    metrics.update({
-        "n_clusters": n_clusters,
-        "n_noise": n_noise,
-        "n_samples": len(df_sample),
-    })
-
-    # --------------------------------------------------
-    # 6) FRAUDE POR CLUSTER
-    # --------------------------------------------------
-    df_fraude = pd.DataFrame({
-        "cluster": labels,
-        "is_fraud": y.values,
-    })
-
-    fraude_by_cluster = (
-        df_fraude
-        .groupby("cluster")["is_fraud"]
-        .agg(
+    # =========================================================
+    # Helper: función de fraude por cluster
+    # =========================================================
+    def fraude_por_cluster(labels, y):
+        df_temp = pd.DataFrame({"cluster": labels, "is_fraud": y.values})
+        return df_temp.groupby("cluster")["is_fraud"].agg(
             n_transacciones="count",
             n_fraude="sum",
             pct_fraude=lambda s: 100 * s.mean()
-        )
-        .reset_index()
-        .sort_values("pct_fraude", ascending=False)
-    )
+        ).sort_values("pct_fraude", ascending=False)
 
-    # --------------------------------------------------
-    # 7) DATAFRAME PCA
-    # --------------------------------------------------
-    df_pca = pd.DataFrame(
-        X_pca,
-        columns=["PC1", "PC2"],
-        index=df_sample.index
-    )
-    df_pca["cluster"] = labels
+    # =========================================================
+    # 4️⃣ DBSCAN
+    # =========================================================
+    dbscan = DBSCAN(eps=params.get("dbscan_eps", 0.2), min_samples=params.get("dbscan_min_samples", 5))
+    labels_dbscan = dbscan.fit_predict(X_pca)
+    n_clusters = len(set(labels_dbscan)) - (1 if -1 in labels_dbscan else 0)
+    n_ruido = np.sum(labels_dbscan == -1)
 
-    # --------------------------------------------------
-    # 8) PLOT
-    # --------------------------------------------------
-    fig_path = params["outputs"]["figure_path"]
+    sil, db, ch = get_metrics(X_pca, labels_dbscan)
+    print("\n📊 DBSCAN:")
+    print(f"Clusters: {n_clusters}, Ruido: {n_ruido}, Silhouette: {sil:.4f}")
 
-    plt.figure(figsize=(12, 8))
-    sns.scatterplot(
-        data=df_pca[df_pca["cluster"] != -1],
-        x="PC1", y="PC2",
-        hue="cluster",
-        palette="tab10",
-        s=40,
-        alpha=0.7,
-    )
-
-    plt.scatter(
-        df_pca[df_pca["cluster"] == -1]["PC1"],
-        df_pca[df_pca["cluster"] == -1]["PC2"],
-        color="black",
-        s=40,
-        label="Ruido (-1)",
-    )
-
-    plt.title("DBSCAN - Clusters en espacio PCA")
-    plt.xlabel("PC1")
-    plt.ylabel("PC2")
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(fig_path)
-    plt.close()
-
-    # --------------------------------------------------
-    # OUTPUTS
-    # --------------------------------------------------
-    return {
-        "pca_clusters": df_pca,
-        "fraud_by_cluster": fraude_by_cluster,
-        "metrics": metrics,
-    }
-
-
-
-def pca_optics_clustering(
-    df: pd.DataFrame,
-    params: Dict,
-) -> Dict:
-    """
-    PCA (2D) + OPTICS clustering con métricas y visualización.
-    """
-
-    # --------------------------------------------------
-    # 1) SAMPLE
-    # --------------------------------------------------
-    n_sample = params.get("n_sample", 50_000)
-    df_sample = (
-        df.sample(n=n_sample, random_state=42)
-        if len(df) > n_sample
-        else df.copy()
-    )
-
-    # --------------------------------------------------
-    # 2) FEATURES
-    # --------------------------------------------------
-    features = params["features"]
-    target = params["target"]
-
-    X = df_sample[features]
-    y = df_sample[target]
-
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    # --------------------------------------------------
-    # 3) PCA
-    # --------------------------------------------------
-    pca = PCA(n_components=2, random_state=42)
-    X_pca = pca.fit_transform(X_scaled)
-
-    # --------------------------------------------------
-    # 4) OPTICS
-    # --------------------------------------------------
-    optics = OPTICS(
-        min_samples=params["optics"]["min_samples"],
-        xi=params["optics"]["xi"],
-        min_cluster_size=params["optics"]["min_cluster_size"],
-    )
-
-    labels = optics.fit_predict(X_pca)
-
-    # --------------------------------------------------
-    # 5) MÉTRICAS (sin ruido)
-    # --------------------------------------------------
-    mask = labels != -1
-    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-    n_noise = int(np.sum(labels == -1))
-
-    if n_clusters > 1 and mask.sum() > 0:
-        metrics = {
-            "silhouette": float(silhouette_score(X_pca[mask], labels[mask])),
-            "davies_bouldin": float(davies_bouldin_score(X_pca[mask], labels[mask])),
-            "calinski_harabasz": float(calinski_harabasz_score(X_pca[mask], labels[mask])),
-        }
-    else:
-        metrics = {
-            "silhouette": np.nan,
-            "davies_bouldin": np.nan,
-            "calinski_harabasz": np.nan,
-        }
-
-    metrics.update({
-        "n_clusters": n_clusters,
-        "n_noise": n_noise,
-        "n_samples": len(df_sample),
+    df_resumen_dbscan = pd.DataFrame({
+        "algoritmo": ["DBSCAN"],
+        "n_muestra": [len(df_sample)],
+        "eps": [dbscan.eps],
+        "min_samples": [dbscan.min_samples],
+        "n_clusters": [n_clusters],
+        "n_ruido": [n_ruido],
+        "silhouette": [sil],
+        "davies_bouldin": [db],
+        "calinski_harabasz": [ch]
     })
 
-    # --------------------------------------------------
-    # 6) FRAUDE POR CLUSTER
-    # --------------------------------------------------
-    df_fraude = pd.DataFrame({
-        "cluster": labels,
-        "is_fraud": y.values,
-    })
+    df_fraude_dbscan = fraude_por_cluster(labels_dbscan, y_sample)
+    df_plot = pd.DataFrame({"PC1": X_pca[:, 0], "PC2": X_pca[:, 1], "cluster": labels_dbscan})
 
-    fraude_by_cluster = (
-        df_fraude
-        .groupby("cluster")["is_fraud"]
-        .agg(
-            n_transacciones="count",
-            n_fraude="sum",
-            pct_fraude=lambda s: 100 * s.mean()
-        )
-        .reset_index()
-        .sort_values("pct_fraude", ascending=False)
-    )
-
-    # --------------------------------------------------
-    # 7) DATAFRAME PCA
-    # --------------------------------------------------
-    df_pca = pd.DataFrame(
-        X_pca,
-        columns=["PC1", "PC2"],
-        index=df_sample.index
-    )
-    df_pca["cluster"] = labels
-
-    # --------------------------------------------------
-    # 8) PLOT
-    # --------------------------------------------------
-    fig_path = params["outputs"]["figure_path"]
-
-    plt.figure(figsize=(12, 8))
-    sns.scatterplot(
-        data=df_pca[df_pca["cluster"] != -1],
-        x="PC1", y="PC2",
-        hue="cluster",
-        palette="tab10",
-        s=40,
-        alpha=0.7,
-    )
-
-    plt.scatter(
-        df_pca[df_pca["cluster"] == -1]["PC1"],
-        df_pca[df_pca["cluster"] == -1]["PC2"],
-        color="black",
-        s=40,
-        label="Ruido (-1)",
-    )
-
-    plt.title("OPTICS - Clusters en espacio PCA")
-    plt.xlabel("PC1")
-    plt.ylabel("PC2")
+    # --- Gráfico DBSCAN
+    plt.figure(figsize=(10, 7))
+    sns.scatterplot(data=df_plot[df_plot["cluster"] != -1], x="PC1", y="PC2", hue="cluster", palette="tab10", s=40, alpha=0.7)
+    plt.scatter(df_plot[df_plot["cluster"] == -1]["PC1"], df_plot[df_plot["cluster"] == -1]["PC2"], color="black", s=50, label="Ruido (-1)")
+    plt.title("DBSCAN - Clusters en PCA")
     plt.legend()
     plt.tight_layout()
-    plt.savefig(fig_path)
+    plt.savefig("data/08_reporting/clustering/dbscan_clusters.png", dpi=300)
     plt.close()
 
-    return {
-        "pca_clusters": df_pca,
-        "fraud_by_cluster": fraude_by_cluster,
-        "metrics": metrics,
-    }
+    # Guardar resultados DBSCAN
+    df_plot.to_csv("data/07_model_output/clustering/dbscan_pca_labels.csv", index=False)
+    df_fraude_dbscan.to_csv("data/07_model_output/clustering/dbscan_fraud_by_cluster.csv")
+    df_resumen_dbscan.to_json("data/07_model_output/clustering/dbscan_metrics.json", orient="records", indent=2)
 
-#clustering pca kmeans
-def pca_kmeans_clustering(
-    df: pd.DataFrame,
-    params: Dict,
-) -> Dict:
-    """
-    K-Means entrenado sobre X escalado.
-    PCA solo para visualización 2D.
-    """
+    # =========================================================
+    # 5️⃣ OPTICS
+    # =========================================================
+    optics = OPTICS(min_samples=50, xi=0.05, min_cluster_size=0.02)
+    labels_optics = optics.fit_predict(X_pca)
+    n_clusters_optics = len(set(labels_optics)) - (1 if -1 in labels_optics else 0)
+    n_ruido_optics = np.sum(labels_optics == -1)
 
-    # --------------------------------------------------
-    # 1) SAMPLE
-    # --------------------------------------------------
-    n_sample = params.get("n_sample", 50_000)
-    df_sample = (
-        df.sample(n=n_sample, random_state=42)
-        if len(df) > n_sample
-        else df.copy()
-    )
+    sil_o, db_o, ch_o = get_metrics(X_pca, labels_optics)
+    print("\n📊 OPTICS:")
+    print(f"Clusters: {n_clusters_optics}, Ruido: {n_ruido_optics}, Silhouette: {sil_o:.4f}")
 
-    # --------------------------------------------------
-    # 2) FEATURES
-    # --------------------------------------------------
-    features = params["features"]
-    target = params["target"]
+    df_resumen_optics = pd.DataFrame({
+        "algoritmo": ["OPTICS"],
+        "n_muestra": [len(df_sample)],
+        "min_samples": [optics.min_samples],
+        "xi": [optics.xi],
+        "min_cluster_size": [optics.min_cluster_size],
+        "n_clusters": [n_clusters_optics],
+        "n_ruido": [n_ruido_optics],
+        "silhouette": [sil_o],
+        "davies_bouldin": [db_o],
+        "calinski_harabasz": [ch_o]
+    })
 
-    X = df_sample[features]
-    y = df_sample[target]
+    df_fraude_optics = fraude_por_cluster(labels_optics, y_sample)
+    df_optics_plot = pd.DataFrame({"PC1": X_pca[:, 0], "PC2": X_pca[:, 1], "cluster": labels_optics})
 
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    # --- Gráfico OPTICS
+    plt.figure(figsize=(10, 7))
+    sns.scatterplot(data=df_optics_plot[df_optics_plot["cluster"] != -1], x="PC1", y="PC2", hue="cluster", palette="tab10", s=40, alpha=0.7)
+    plt.scatter(df_optics_plot[df_optics_plot["cluster"] == -1]["PC1"], df_optics_plot[df_optics_plot["cluster"] == -1]["PC2"],
+                color="black", s=50, label="Ruido (-1)")
+    plt.title("OPTICS - Clusters en PCA")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clustering/optics_clusters.png", dpi=300)
+    plt.close()
 
-    # --------------------------------------------------
-    # 3) ELBOW + SILHOUETTE (diagnóstico)
-    # --------------------------------------------------
-    inertias = {}
-    silhouettes = {}
+    # --- Reachability Plot
+    reachability = optics.reachability_
+    ordering = optics.ordering_
+    plt.figure(figsize=(12, 5))
+    plt.plot(ordering, reachability[ordering], marker=".", alpha=0.6)
+    plt.title("Reachability Plot (OPTICS)")
+    plt.xlabel("Índice ordenado")
+    plt.ylabel("Reachability Distance")
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clustering/optics_reachability.png", dpi=300)
+    plt.close()
 
-    k_range = params["kmeans"]["k_range"]
+    # Guardar resultados OPTICS
+    df_optics_plot.to_csv("data/07_model_output/clustering/optics_pca_labels.csv", index=False)
+    df_fraude_optics.to_csv("data/07_model_output/clustering/optics_fraud_by_cluster.csv")
+    df_resumen_optics.to_json("data/07_model_output/clustering/optics_metrics.json", orient="records", indent=2)
+
+    # =========================================================
+    # 6️⃣ K-Means
+    # =========================================================
+    X_kmeans = X_scaled
+    k_range = range(2, 11)
+    inertias, sil_scores = [], []
 
     for k in k_range:
-        km = KMeans(
-            n_clusters=k,
-            random_state=42,
-            n_init="auto",
-        )
-        labels_k = km.fit_predict(X_scaled)
-        inertias[k] = float(km.inertia_)
-        silhouettes[k] = float(silhouette_score(X_scaled, labels_k))
+        km = KMeans(n_clusters=k, random_state=42, n_init="auto")
+        km.fit(X_kmeans)
+        inertias.append(km.inertia_)
+        sil_scores.append(silhouette_score(X_kmeans, km.labels_))
 
-    # --------------------------------------------------
-    # 4) K-MEANS FINAL
-    # --------------------------------------------------
-    k_final = params["kmeans"]["k_final"]
-
-    kmeans = KMeans(
-        n_clusters=k_final,
-        random_state=42,
-        n_init="auto",
-    )
-
-    labels = kmeans.fit_predict(X_scaled)
-
-    metrics_df = pd.DataFrame([{
-        "algoritmo": "KMeans",
-        "k_final": k_final,
-        "n_samples": len(df_sample),
-        "silhouette": float(silhouette_score(X_scaled, labels)),
-        "davies_bouldin": float(davies_bouldin_score(X_scaled, labels)),
-        "calinski_harabasz": float(calinski_harabasz_score(X_scaled, labels)),
-    }])
-
-    # --------------------------------------------------
-    # 5) FRAUDE POR CLUSTER
-    # --------------------------------------------------
-    df_fraude = pd.DataFrame({
-        "cluster": labels,
-        "is_fraud": y.values,
-    })
-
-    fraude_by_cluster = (
-        df_fraude
-        .groupby("cluster")["is_fraud"]
-        .agg(
-            n_transacciones="count",
-            n_fraude="sum",
-            pct_fraude=lambda s: 100 * s.mean()
-        )
-        .reset_index()
-        .sort_values("pct_fraude", ascending=False)
-    )
-
-    # --------------------------------------------------
-    # 6) PCA PARA VISUALIZACIÓN
-    # --------------------------------------------------
-    pca = PCA(n_components=2, random_state=42)
-    X_pca = pca.fit_transform(X_scaled)
-
-    df_pca = pd.DataFrame(
-        X_pca,
-        columns=["PC1", "PC2"],
-        index=df_sample.index,
-    )
-    df_pca["cluster"] = labels
-
-    # --------------------------------------------------
-    # 7) PLOT PCA
-    # --------------------------------------------------
-    fig_path = params["outputs"]["figure_path"]
-
-    plt.figure(figsize=(12, 8))
-    sns.scatterplot(
-        data=df_pca,
-        x="PC1",
-        y="PC2",
-        hue="cluster",
-        palette="tab10",
-        s=40,
-        alpha=0.7,
-    )
-    plt.title("K-Means - Clusters en espacio PCA (2D)")
+    # --- Elbow y Silhouette plots
+    plt.figure(figsize=(8, 5))
+    plt.plot(k_range, inertias, marker="o")
+    plt.title("Método del Codo (KMeans)")
+    plt.xlabel("Número de clusters (k)")
+    plt.ylabel("Inercia (SSE)")
     plt.tight_layout()
-    plt.savefig(fig_path)
+    plt.savefig("data/08_reporting/clustering/kmeans_elbow.png", dpi=300)
     plt.close()
 
-    # --------------------------------------------------
-    # OUTPUTS
-    # --------------------------------------------------
-    return {
-        "pca_clusters": df_pca,
-        "fraud_by_cluster": fraude_by_cluster,
-        "kmeans_metrics": metrics_df,
-        "kmeans_diagnostics": pd.DataFrame({
-            "k": list(inertias.keys()),
-            "inertia": list(inertias.values()),
-            "silhouette": list(silhouettes.values()),
-        }),
-    }
+    plt.figure(figsize=(8, 5))
+    plt.plot(k_range, sil_scores, marker="o", color="green")
+    plt.title("Silhouette Score por k (KMeans)")
+    plt.xlabel("Número de clusters (k)")
+    plt.ylabel("Silhouette")
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clustering/kmeans_silhouette_scores.png", dpi=300)
+    plt.close()
 
-#tsne 
-def tsne_kmeans_visualization(
-    df_sample: pd.DataFrame,
-    X_scaled: pd.DataFrame,
-    kmeans_labels: pd.Series,
-    params: Dict,
-) -> Dict:
-    """
-    t-SNE solo para visualización del clustering K-Means
-    + análisis de fraude por cluster.
-    """
+    k_final = params.get("kmeans_k", 6)
+    kmeans_final = KMeans(n_clusters=k_final, random_state=42, n_init="auto")
+    labels_kmeans = kmeans_final.fit_predict(X_kmeans)
 
-    # ---------------------------
-    # t-SNE
-    # ---------------------------
-    tsne = TSNE(
-        n_components=2,
-        perplexity=params["tsne"]["perplexity"],
-        learning_rate=params["tsne"]["learning_rate"],
-        init="pca",
-        method="barnes_hut",
-        angle=0.5,
-        random_state=42,
-        max_iter=params["tsne"]["n_iter"],
-    )
+    sil_k, db_k, ch_k = get_metrics(X_kmeans, labels_kmeans)
+    print("\n📊 KMEANS:")
+    print(f"Clusters: {k_final}, Silhouette: {sil_k:.4f}")
 
-    X_tsne = tsne.fit_transform(X_scaled)
+    df_resumen_kmeans = pd.DataFrame({
+        "algoritmo": ["KMeans"],
+        "k": [k_final],
+        "silhouette": [sil_k],
+        "davies_bouldin": [db_k],
+        "calinski_harabasz": [ch_k]
+    })
+    df_fraude_kmeans = fraude_por_cluster(labels_kmeans, y_sample)
 
-    df_tsne = pd.DataFrame(
-        X_tsne,
-        columns=["TSNE1", "TSNE2"],
-        index=df_sample.index,
-    )
+    # --- PCA visualización
+    pca2 = PCA(n_components=2)
+    X_pca2 = pca2.fit_transform(X_kmeans)
+    df_plot_kmeans = pd.DataFrame({"PC1": X_pca2[:, 0], "PC2": X_pca2[:, 1], "cluster": labels_kmeans})
+    plt.figure(figsize=(10, 7))
+    sns.scatterplot(data=df_plot_kmeans, x="PC1", y="PC2", hue="cluster", palette="tab10", s=40, alpha=0.7)
+    plt.title("KMeans - Clusters PCA 2D")
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clustering/kmeans_pca.png", dpi=300)
+    plt.close()
 
-    df_tsne["cluster"] = kmeans_labels.values
-    df_tsne["is_fraud"] = df_sample[params["target"]].values
+    # --- t-SNE visualización
+    tsne = TSNE(n_components=2, perplexity=50, learning_rate="auto", init="pca",
+                method="barnes_hut", angle=0.5, random_state=42, max_iter=1000)
+    X_tsne_vis = tsne.fit_transform(X_kmeans)
+    df_tsne_plot = pd.DataFrame({"TSNE1": X_tsne_vis[:, 0], "TSNE2": X_tsne_vis[:, 1], "cluster": labels_kmeans, "is_fraud": y_sample.values})
+    df_tsne_plot.to_csv("data/07_model_output/clustering/kmeans_tsne_embedding.csv", index=False)
+    df_fraude_kmeans.to_csv("data/07_model_output/clustering/kmeans_fraud_by_cluster_tsne.csv")
+    df_resumen_kmeans.to_csv("data/07_model_output/clustering/kmeans_metrics.csv", index=False)
 
-    # ---------------------------
-    # Fraude por cluster (t-SNE)
-    # ---------------------------
-    fraude_by_cluster = (
-        df_tsne
-        .groupby("cluster")["is_fraud"]
-        .agg(
-            n_transacciones="count",
-            n_fraude="sum",
-            pct_fraude=lambda x: 100 * x.mean()
-        )
-        .reset_index()
-        .sort_values("pct_fraude", ascending=False)
-    )
+    plt.figure(figsize=(10, 7))
+    sns.scatterplot(data=df_tsne_plot, x="TSNE1", y="TSNE2", hue="cluster", palette="tab10", s=40, alpha=0.7)
+    plt.title(f"KMeans (k={k_final}) - t-SNE visualización")
+    plt.tight_layout()
+    plt.savefig("data/08_reporting/clustering/kmeans_tsne.png", dpi=300)
+    plt.close()
 
-    return {
-        "tsne_embedding": df_tsne,
-        "fraud_by_cluster_tsne": fraude_by_cluster,
-    }
-
-def assign_kmeans_cluster_to_full_dataset(
-    df_full: pd.DataFrame,
-    scaler,
-    kmeans_model,
-    params: Dict,
-) -> pd.DataFrame:
-    """
-    Genera cluster_id para TODO el dataset usando
-    el mismo scaler y modelo K-Means entrenado.
-    """
-
-    features = params["features"]
-
-    X_full = df_full[features]
+    # =========================================================
+    # 7️⃣ Generar cluster_id en todo el dataset y guardar
+    # =========================================================
+    X_full = df[["AmountZScoreByLocation", "IsAnomaly", "IsLateNight", "IsWeekend"]]
     X_full_scaled = scaler.transform(X_full)
+    df["cluster_id"] = kmeans_final.predict(X_full_scaled)
+    df.to_parquet("data/05_model_input/Features_clustering_v1.parquet", index=False)
+    print("✅ Dataset completo guardado como Features_clustering_v1.parquet")
 
-    df_out = df_full.copy()
-    df_out["cluster_id"] = kmeans_model.predict(X_full_scaled)
+    # 👇 Kedro solo necesita el DataFrame final
+    return df
 
-    return df_out

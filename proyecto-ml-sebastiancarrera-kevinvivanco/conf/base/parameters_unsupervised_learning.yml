@@ -1,5 +1,4 @@
-# This is a boilerplate parameters config generated for pipeline 'unsupervised_learning'
-# using Kedro 1.0.0.
-#
-# Documentation for this file format can be found in "Parameters"
-# Link: https://docs.kedro.org/en/1.0.0/configuration/parameters.html
+unsupervised_learning:
+  dbscan_eps: 0.2
+  dbscan_min_samples: 5
+  kmeans_k: 6
