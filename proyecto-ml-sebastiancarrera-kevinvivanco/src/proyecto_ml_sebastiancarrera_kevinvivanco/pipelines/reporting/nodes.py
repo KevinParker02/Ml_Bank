@@ -5,12 +5,13 @@ from IPython.display import display, HTML
 
 
 def generate_model_dashboard(reporting_config: dict):
-    """Genera un dashboard visual combinando resultados de clasificación y regresión."""
+    """Genera un dashboard visual combinando resultados de clasificación, regresión y clustering."""
 
     class_results_path = reporting_config["classification_results_path"]
     reg_results_path = reporting_config["regression_results_path"]
     class_img_path = reporting_config["classification_images_path"]
     reg_img_path = reporting_config["regression_images_path"]
+    clust_img_path = reporting_config.get("clustering_images_path")  # 👈 NUEVO
     output_path = reporting_config["dashboard_output_path"]
 
     os.makedirs(output_path, exist_ok=True)
@@ -28,6 +29,7 @@ def generate_model_dashboard(reporting_config: dict):
         body { font-family: 'Segoe UI', sans-serif; background-color: #fafafa; margin: 40px; }
         h1 { color: #1a73e8; border-bottom: 2px solid #1a73e8; }
         h2 { color: #333; }
+        h3 { color: #444; margin-top: 25px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         th { background-color: #1a73e8; color: white; }
@@ -35,7 +37,7 @@ def generate_model_dashboard(reporting_config: dict):
         img { border-radius: 8px; margin: 10px auto; max-width: 500px; display: block; }
         .section { margin-bottom: 50px; }
     </style>
-    <h1>📊 Dashboard Visual – Modelos Clasificación & Regresión</h1>
+    <h1>📊 Dashboard Visual – Modelos Clasificación, Regresión y Clustering</h1>
     """
 
     # ======================================================
@@ -53,7 +55,7 @@ def generate_model_dashboard(reporting_config: dict):
             prec = report.get("precision", "—")
             rec = report.get("recall", "—")
 
-            # Buscar imágenes (ROC, Matriz, etc.)
+            # Buscar imágenes
             imgs = []
             if os.path.exists(class_img_path):
                 for img in os.listdir(class_img_path):
@@ -87,12 +89,10 @@ def generate_model_dashboard(reporting_config: dict):
             rmse = res["rmse"]
             mae = res["mae"]
 
-            # --- Buscar imágenes asociadas al modelo ---
             imgs = []
             if os.path.exists(reg_img_path):
                 key = name.lower().replace(" ", "").replace("_", "")
 
-                # Diccionario de alias exactos por modelo
                 alias_map = {
                     "linearregression": ["linear_regression"],
                     "ridgeregression": ["ridge_regressor"],
@@ -101,18 +101,15 @@ def generate_model_dashboard(reporting_config: dict):
                     "xgbregressor": ["xgb_regressor", "xgboost_regressor"]
                 }
 
-                # Lista de patrones a buscar
                 variants = [key]
                 if key in alias_map:
                     variants.extend(alias_map[key])
 
-                # Buscar solo archivos que empiecen con esos nombres
                 for img in os.listdir(reg_img_path):
                     img_lower = img.lower()
                     if any(img_lower.startswith(v) for v in variants):
                         imgs.append(f"<img src='../regresion/{img}' alt='{img}'>")
 
-            # Si no hay imágenes, mostrar aviso
             img_html = "".join(imgs) if imgs else "<em style='color:gray'>⚠️ No se encontraron gráficos</em>"
 
             html += f"""
@@ -128,7 +125,69 @@ def generate_model_dashboard(reporting_config: dict):
         html += "</table></div>"
 
     # ======================================================
-    # 💾 GUARDAR HTML
+    # 🧩 CLUSTERING (DBSCAN / OPTICS / K-MEANS)
+    # ======================================================
+    if clust_img_path and os.path.exists(clust_img_path):
+        html += "<div class='section'><h2>🧩 Análisis de Clustering (No Supervisado)</h2>"
+
+        title_map = {
+            "dbscan_clusters": "Clusters encontrados con DBSCAN (PCA)",
+            "optics_reachability": "Reachability Plot – OPTICS",
+            "optics_clusters": "Clusters encontrados con OPTICS",
+            "kmeans_elbow": "Método del Codo – K-Means",
+            "kmeans_pca": "K-Means sobre PCA",
+            "kmeans_silhouette_scores": "Scores de Silhouette (K-Means)",
+            "kmeans_tsne": "K-Means sobre t-SNE (50K muestras)"
+        }
+
+        for img in sorted(os.listdir(clust_img_path)):
+            if not img.lower().endswith((".png", ".jpg", ".jpeg")):
+                continue
+
+            base = os.path.splitext(img)[0]
+            title = title_map.get(base, base)
+
+            html += f"""
+            <div class='section'>
+                <h3>{title}</h3>
+                <img src='../clustering/{img}' alt='{img}'>
+            </div>
+            """
+
+        html += "</div>"
+
+    # ======================================================
+    # 🟦 SECCIÓN FINAL – XGBOOST MEJORADO
+    # ======================================================
+    xgb_special_images = [
+        "confusion_matrix_xgb.png",
+        "roc_auc_xgb.png"
+    ]
+
+    html += "<div class='section'><h2>🟦 Resultados Finales – XGBoost Mejorado</h2>"
+
+    for img in xgb_special_images:
+        full = os.path.join(class_img_path, img)
+        if os.path.exists(full):
+            title = (
+                "Matriz de Confusión – XGBoost Mejorado"
+                if "confusion" in img
+                else "Curva ROC–AUC – XGBoost Mejorado"
+            )
+
+            html += f"""
+            <div class='section'>
+                <h3>{title}</h3>
+                <img src='../clasificacion/{img}' alt='{img}'>
+            </div>
+            """
+        else:
+            html += f"<p style='color:red'>⚠️ No se encontró la imagen: {img}</p>"
+
+    html += "</div>"
+
+    # ======================================================
+    # 💾 GUARDAR
     # ======================================================
     output_file = os.path.join(output_path, "model_dashboard.html")
     with open(output_file, "w", encoding="utf-8") as f:

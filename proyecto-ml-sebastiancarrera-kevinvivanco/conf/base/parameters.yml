@@ -175,4 +175,5 @@ reporting_config:
   regression_results_path: data/07_model_output/regresion
   classification_images_path: data/08_reporting/clasificacion
   regression_images_path: data/08_reporting/regresion
+  clustering_images_path: data/08_reporting/clustering
   dashboard_output_path: data/08_reporting/dashboard
