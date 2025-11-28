@@ -65,6 +65,30 @@ stages:
           persist: true
 
   # =====================================================
+  # 6️⃣ Unsupervised Learning (Clustering + Clasificación final)
+  # =====================================================
+  unsupervised_learning:
+    cmd: kedro run --pipeline=unsupervised_learning
+    deps:
+      - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/unsupervised_learning
+      - data/05_model_input
+      - data/06_models/clasificacion
+      - data/06_models/regresion
+    outs:
+      - data/05_model_input/Features_clustering_v1.parquet:
+          persist: true
+      - data/06_models/clasificacion/xgb_final_model.pkl:
+          persist: true
+      - data/07_model_output/clustering:
+          persist: true
+      - data/07_model_output/clasificacion/xgb_final_metrics.json:
+          persist: true
+      - data/08_reporting/clustering:
+          persist: true
+      - data/08_reporting/clasificacion:
+          persist: true
+
+  # =====================================================
   # 6️⃣ Reporting (Dashboard final)
   # =====================================================
   reporting:
@@ -75,6 +99,7 @@ stages:
       - data/06_models/regresion
       - data/08_reporting/clasificacion
       - data/08_reporting/regresion
+      - data/08_reporting/clustering
     outs:
       - data/08_reporting/dashboard/model_dashboard.html:
           persist: true
