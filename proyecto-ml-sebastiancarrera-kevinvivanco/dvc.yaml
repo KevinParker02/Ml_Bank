@@ -1,4 +1,5 @@
 stages:
+
   # =====================================================
   # 1️⃣ Data Engineering
   # =====================================================
@@ -33,47 +34,53 @@ stages:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/feature_selection
       - data/04_feature
     outs:
-      - data/05_model_input:
+      - data/05_model_input/Features_training_v1.parquet:
+          persist: true
+      - data/05_model_input/Features_training_v2.parquet:
           persist: true
 
   # =====================================================
-  # 4️⃣ Clasificación (Modelos de detección de fraude)
+  # 4️⃣ Clasificación (RESULTADOS, NO MODELOS)
   # =====================================================
   classification_models:
     cmd: kedro run --pipeline=classification_models
     deps:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/classification_models
-      - data/05_model_input
+      - data/05_model_input/Features_training_v1.parquet
     outs:
-      - data/06_models/clasificacion:
+      - data/07_model_output/clasificacion/knn_results.pkl:
           persist: true
-      - data/07_model_output/clasificacion:
+      - data/07_model_output/clasificacion/dt_results.pkl:
+          persist: true
+      - data/07_model_output/clasificacion/rf_results.pkl:
+          persist: true
+      - data/07_model_output/clasificacion/mlp_results.pkl:
+          persist: true
+      - data/07_model_output/clasificacion/xgb_results.pkl:
           persist: true
 
   # =====================================================
-  # 5️⃣ Regresión (Predicción de valores monetarios)
+  # 5️⃣ Regresión (RESULTADOS, NO MODELOS)
   # =====================================================
   regression_models:
     cmd: kedro run --pipeline=regression_models
     deps:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/regression_models
-      - data/05_model_input
+      - data/05_model_input/Features_training_v2.parquet
     outs:
-      - data/06_models/regresion:
-          persist: true
       - data/07_model_output/regresion:
           persist: true
 
   # =====================================================
-  # 6️⃣ Unsupervised Learning (Clustering + Clasificación final)
+  # 6️⃣ Unsupervised Learning + XGB Final
   # =====================================================
   unsupervised_learning:
     cmd: kedro run --pipeline=unsupervised_learning
     deps:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/unsupervised_learning
-      - data/05_model_input
-      - data/06_models/clasificacion
-      - data/06_models/regresion
+      - data/05_model_input/Features_training_v1.parquet
+      - data/05_model_input/Features_training_v2.parquet
+      - data/07_model_output/regresion
     outs:
       - data/05_model_input/Features_clustering_v1.parquet:
           persist: true
@@ -89,14 +96,15 @@ stages:
           persist: true
 
   # =====================================================
-  # 6️⃣ Reporting (Dashboard final)
+  # 7️⃣ Reporting
   # =====================================================
   reporting:
     cmd: kedro run --pipeline=reporting
     deps:
       - src/proyecto_ml_sebastiancarrera_kevinvivanco/pipelines/reporting
       - data/06_models/clasificacion
-      - data/06_models/regresion
+      - data/07_model_output/clasificacion
+      - data/07_model_output/regresion
       - data/08_reporting/clasificacion
       - data/08_reporting/regresion
       - data/08_reporting/clustering
