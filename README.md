@@ -55,7 +55,7 @@ dvc repro
 -------------------------------
 
 **Ejecución con Docker + Airflow**
-# Ejecuta la aplicación de Docker (Segundo plano) y en VScode No activar el entorno virtual en VScode.
+# Ejecuta la aplicación de Docker (Segundo plano).
 
 # Ejecutar el contenedor de Docker + Airflow desde VS Code
 docker-compose up --build
